@@ -32,3 +32,4 @@ PLAYER_HIT_BOX = pg.Rect(0,0,35,40)
 
 #mobs
 MOB_IMAGE = 'mobs\\zombie01_normal.png'
+MOB_SPEED = 150
