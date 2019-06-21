@@ -73,6 +73,9 @@ class Mob(pg.sprite.Sprite):
         self.game = game
         self.image = game.mob_image
         self.rect = self.image.get_rect()
+        #copy of once in settings
+        self.hit_box = MOB_HIT_BOX.copy()
+        self.hit_box_center = self.rect.center
         self.pos = vec(x,y) * TILESIZE
         self.vel = vec(0,0)
         self.acc = vec(0,0)
@@ -90,7 +93,13 @@ class Mob(pg.sprite.Sprite):
         self.vel += self.acc * self.game.dt
         #equation of motion
         self.pos += self.vel * self.game.dt + 0.5 * self.acc * self.game.dt**2
-        self.rect.center = self.pos
+        #mob collision
+        self.hit_box.centerx = self.pos.x
+        collide_with_walls(self, self.game.walls, 'x')
+        self.hit_box.centery = self.pos.y
+        collide_with_walls(self, self.game.walls, 'y')
+        #after collision regular rect set to where hitbox is after collision
+        self.rect.center = self.hit_box.center
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
