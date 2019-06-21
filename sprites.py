@@ -4,6 +4,27 @@ from map import collide_hit_box
 
 vec = pg.math.Vector2
 
+def collide_with_walls(sprite, group, dir):
+    #checkCollision serpately
+    if dir == 'x':
+        hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_box)
+        if hits:
+            if sprite.vel.x > 0:
+                sprite.pos.x = hits[0].rect.left - sprite.hit_box.width/2
+            if sprite.vel.x < 0:
+                sprite.pos.x = hits[0].rect.right + sprite.hit_box.width/2
+            sprite.vel.x = 0
+            sprite.hit_box.centerx = sprite.pos.x
+    if dir == 'y':
+        hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_box)
+        if hits:
+            if sprite.vel.y > 0:
+                sprite.pos.y = hits[0].rect.top - sprite.hit_box.height/2
+            if sprite.vel.y < 0:
+                sprite.pos.y = hits[0].rect.bottom + sprite.hit_box.height/2
+            sprite.vel.y = 0
+            sprite.hit_box.centery = sprite.pos.y
+
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites
@@ -13,7 +34,6 @@ class Player(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.hit_box = PLAYER_HIT_BOX
         self.hit_box.center = self.rect.center
-
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
         self.rot = 0
@@ -31,28 +51,6 @@ class Player(pg.sprite.Sprite):
         if keys[pg.K_UP]:
             self.vel = vec(playerSpeed, 0).rotate(-self.rot)
 
-    def collide_with_walls(self, dir):
-        #checkCollision serpately
-        if dir == 'x':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False, collide_hit_box)
-            if hits:
-                if self.vel.x > 0:
-                    self.pos.x = hits[0].rect.left - self.hit_box.width/2
-                if self.vel.x < 0:
-                    self.pos.x = hits[0].rect.right + self.hit_box.width/2
-                self.vel.x = 0
-                self.hit_box.centerx = self.pos.x
-        if dir == 'y':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False, collide_hit_box)
-            if hits:
-                if self.vel.y > 0:
-                    self.pos.y = hits[0].rect.top - self.hit_box.height/2
-                if self.vel.y < 0:
-                    self.pos.y = hits[0].rect.bottom + self.hit_box.height/2
-                self.vel.y = 0
-                self.hit_box.centery = self.pos.y
-
-
     def update(self):
         #get keys pressed
         self.get_keys()
@@ -64,10 +62,9 @@ class Player(pg.sprite.Sprite):
         self.rect.center = self.pos
         self.pos += self.vel * self.game.dt
         self.hit_box.centerx = self.pos.x
-        self.collide_with_walls('x')
+        collide_with_walls(self, self.game.walls, 'x')
         self.hit_box.centery = self.pos.y
-        self.collide_with_walls('y')
-
+        collide_with_walls(self, self.game.walls, 'y')
 
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
