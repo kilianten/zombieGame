@@ -25,6 +25,7 @@ class Game:
         imageFolder = path.join(game_folder, 'images')
         self.map = Map (path.join(game_folder, 'map.txt'))
         self.playerImage = pg.image.load(path.join(imageFolder, playerImage)).convert_alpha()
+        self.bullet_image = pg.image.load(path.join(imageFolder, BULLET_IMAGE)).convert_alpha()
         self.mob_image = pg.image.load(path.join(imageFolder, MOB_IMAGE)).convert_alpha()
         self.wall_image = pg.image.load(path.join(imageFolder, WALL_IMAGE)).convert_alpha()
         #self.kitchenTileImage = pg.image.load(path.join(imageFolder, KITCHEN_TILE_IMAGE)).convert_alpha()
@@ -35,6 +36,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
+        self.bullets = pg.sprite.Group()
         for row, tiles in enumerate(self.map.data):
             for col, tile in enumerate(tiles):
                 if tile == '1':

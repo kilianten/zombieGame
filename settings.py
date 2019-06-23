@@ -30,6 +30,12 @@ playerImage = "player\\Rich.png"
 PLAYER_ROT_SPEED = 250
 PLAYER_HIT_BOX = pg.Rect(0,0,35,40)
 
+#gun settings
+BULLET_IMAGE = "weapons\\bullet.png"
+BULLET_SPEED = 500
+BULLET_LIFETIME = 1000
+BULLET_RATE = 150
+
 #mobs
 MOB_IMAGE = 'mobs\\zombie01_normal.png'
 MOB_SPEED = 150
