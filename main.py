@@ -30,6 +30,7 @@ class Game:
         self.wall_image = pg.image.load(path.join(imageFolder, WALL_IMAGE)).convert_alpha()
         self.player_shooting = pg.image.load(path.join(imageFolder, PLAYER_SHOOTING)).convert_alpha()
 
+
         #self.kitchenTileImage = pg.image.load(path.join(imageFolder, KITCHEN_TILE_IMAGE)).convert_alpha()
 
 

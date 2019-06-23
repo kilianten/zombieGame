@@ -1,4 +1,5 @@
 import pygame as pg
+from random import uniform
 from settings import *
 from map import collide_hit_box
 
@@ -39,6 +40,7 @@ class Player(pg.sprite.Sprite):
         self.rot = 0
         self.last_shot = 0
         self.shooting = False
+        self.gunEquipped = 0
 
     def get_keys(self):
         self.rot_speed = 0
@@ -57,11 +59,15 @@ class Player(pg.sprite.Sprite):
             if now - self.last_shot > BULLET_RATE:
                 self.last_shot = now
                 dir = vec(1,0).rotate(-self.rot)
-                Bullet(self.game, self.pos, dir, self.rot)
+                #so bullet spawns from gun not center of player
+                pos = self.pos + BULLET_OFFSET.rotate(-self.rot)
+                Bullet(self.game, pos, dir, self.rot)
                 self.shooting = True
+                #kickback
+                self.vel = vec(-KICKBACK, 0).rotate(-self.rot)
         else:
             self.shooting = False;
-            
+
     def update(self):
         if self.shooting:
             curr_image = self.game.player_shooting
@@ -125,7 +131,9 @@ class Bullet(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.pos = vec(pos)
         self.rect.center = pos
-        self.vel = dir * BULLET_SPEED
+        #innaccuracy
+        spread = uniform (-GUN_SPREAD, GUN_SPREAD)
+        self.vel = dir.rotate(spread) * BULLET_SPEED
         self.spawn_time = pg.time.get_ticks()
 
 

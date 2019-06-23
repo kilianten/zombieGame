@@ -1,4 +1,5 @@
 import pygame as pg
+vec = pg.math.Vector2
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -31,11 +32,20 @@ PLAYER_ROT_SPEED = 250
 PLAYER_HIT_BOX = pg.Rect(0,0,35,40)
 PLAYER_SHOOTING = "player\\richShooting.png"
 
+
 #gun settings
 BULLET_IMAGE = "weapons\\bullet.png"
 BULLET_SPEED = 500
 BULLET_LIFETIME = 1000
 BULLET_RATE = 150
+KICKBACK = 100
+GUN_SPREAD = 5
+GUN_OFFSET = 0
+PISTOL_IMAGE = "weapons\\handgun.png"
+
+
+#how far off bullet is from player
+BULLET_OFFSET = vec(30, 0)
 
 #mobs
 MOB_IMAGE = 'mobs\\zombie01_normal.png'
