@@ -124,7 +124,7 @@ class Mob(pg.sprite.Sprite):
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self, game, pos, dir, rot):
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.bullets
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.transform.rotate(game.bullet_image, rot)

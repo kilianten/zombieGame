@@ -9,10 +9,8 @@ class Game:
 
     def __init__(self):
         pg.init()
-
         pg.font.init()
         self.myfont = pg.font.SysFont('Arial Header', 25)
-
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
@@ -69,6 +67,10 @@ class Game:
         # update portion of the game loop
         self.all_sprites.update()
         self.camera.update(self.player)
+        #bullet hits mobs
+        hits = pg.sprite.groupcollide(self.mobs, self.bullets, False, True)
+        for hit in hits:
+            hit.kill()
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
