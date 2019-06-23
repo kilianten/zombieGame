@@ -38,6 +38,7 @@ class Player(pg.sprite.Sprite):
         self.pos = vec(x,y) * TILESIZE
         self.rot = 0
         self.last_shot = 0
+        self.shooting = False
 
     def get_keys(self):
         self.rot_speed = 0
@@ -57,14 +58,21 @@ class Player(pg.sprite.Sprite):
                 self.last_shot = now
                 dir = vec(1,0).rotate(-self.rot)
                 Bullet(self.game, self.pos, dir, self.rot)
-
+                self.shooting = True
+        else:
+            self.shooting = False;
+            
     def update(self):
+        if self.shooting:
+            curr_image = self.game.player_shooting
+        else:
+            curr_image = self.game.playerImage
         #get keys pressed
         self.get_keys()
         #rotate player
         self.rot = (self.rot + self.rot_speed * self.game.dt) % 360
         #rotate image
-        self.image = pg.transform.rotate(self.game.playerImage, self.rot)
+        self.image = pg.transform.rotate(curr_image, self.rot)
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
         self.pos += self.vel * self.game.dt

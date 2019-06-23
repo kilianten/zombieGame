@@ -29,6 +29,7 @@ playerSpeed = 300
 playerImage = "player\\Rich.png"
 PLAYER_ROT_SPEED = 250
 PLAYER_HIT_BOX = pg.Rect(0,0,35,40)
+PLAYER_SHOOTING = "player\\richShooting.png"
 
 #gun settings
 BULLET_IMAGE = "weapons\\bullet.png"
