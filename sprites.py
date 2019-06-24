@@ -1,5 +1,5 @@
 import pygame as pg
-from random import uniform
+from random import *
 from settings import *
 from map import collide_hit_box
 
@@ -102,6 +102,7 @@ class Mob(pg.sprite.Sprite):
         self.acc = vec(0,0)
         self.rect.center = self.pos
         self.rot = 0
+        self.health = 100 + randint(-20,20)
 
     def update(self):
         #find the angle between player and x axis i.e where zombie needs to look
@@ -121,6 +122,8 @@ class Mob(pg.sprite.Sprite):
         collide_with_walls(self, self.game.walls, 'y')
         #after collision regular rect set to where hitbox is after collision
         self.rect.center = self.hit_box.center
+        if self.health <= 0:
+            self.kill()
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self, game, pos, dir, rot):

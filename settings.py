@@ -42,7 +42,7 @@ KICKBACK = 100
 GUN_SPREAD = 5
 GUN_OFFSET = 0
 PISTOL_IMAGE = "weapons\\handgun.png"
-
+PISTOL_DAMAGE = 10
 
 #how far off bullet is from player
 BULLET_OFFSET = vec(30, 0)
