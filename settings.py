@@ -26,6 +26,7 @@ WALL_IMAGE = 'structures\\wall.png'
 KITCHEN_TILE_IMAGE = 'structures\\kitchenTile.png'
 
 #player settings
+PLAYER_HEALTH = 100
 playerSpeed = 300
 playerImage = "player\\Rich.png"
 PLAYER_ROT_SPEED = 250
@@ -51,3 +52,6 @@ BULLET_OFFSET = vec(30, 0)
 MOB_IMAGE = 'mobs\\zombie01_normal.png'
 MOB_SPEED = 150
 MOB_HIT_BOX = pg.Rect(0,0,35,40)
+MOB_HEALTH = 100
+MOB_DAMAGE = 10
+MOB_KNOCKBACK = 15

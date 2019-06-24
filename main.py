@@ -5,6 +5,27 @@ from settings import *
 from sprites import *
 from map import *
 
+
+#HUD display
+def draw_player_health(surf, x, y, pct):
+    if pct < 0:
+        pct = 0
+    BAR_LENGTH = 100
+    BAR_HEIGHT = 20
+    fill = pct * BAR_LENGTH
+    outline_rect = pg.Rect(x,y, BAR_LENGTH, BAR_HEIGHT)
+    fill_rect = pg.Rect(x,y, fill, BAR_HEIGHT)
+    #change color depending on health status
+    print(pct)
+    if pct > 0.6:
+        col = GREEN
+    elif pct > 0.3:
+        col = YELLOW
+    else:
+        col = RED
+    pg.draw.rect(surf, col, fill_rect)
+    pg.draw.rect(surf, WHITE, outline_rect, 2)
+
 class Game:
 
     def __init__(self):
@@ -67,6 +88,15 @@ class Game:
         # update portion of the game loop
         self.all_sprites.update()
         self.camera.update(self.player)
+        #mobs hit  player collide
+        hits = pg.sprite.spritecollide(self.player, self.mobs, False, collide_hit_box)
+        for hit in hits:
+            self.player.health -= MOB_DAMAGE
+            hit.vel = vec(0,0)
+            if self.player.health <= 0:
+                self.playing = False
+        if hits:
+            self.player.pos += vec(MOB_KNOCKBACK, 0).rotate(-hits[0].rot)
         #bullet hits mobs
         hits = pg.sprite.groupcollide(self.mobs, self.bullets, False, True)
         for hit in hits:
@@ -88,9 +118,13 @@ class Game:
                 pg.draw.rect(self.screen, GREEN, self.player.hit_box, 2)
                 positionText = self.myfont.render('X: ' + '{0:.2f}'.format(self.player.pos.x) + ("     ") + 'Y: ' + '{0:.2f}'.format(self.player.pos.y) , False, (0, 0, 0))
                 FPSText = self.myfont.render("{:.2f}".format(self.clock.get_fps()), False, (0, 0, 0))
+                playerHealthText = self.myfont.render("{:.2f}".format(self.player.health/PLAYER_HEALTH), False, (0, 0, 0))
 
                 self.screen.blit(positionText, (0,0))
                 self.screen.blit(FPSText, (0,20))
+                self.screen.blit(playerHealthText, (0,40))
+        #HUD FUNCTIoNS
+        draw_player_health(self.screen, 10, 10, self.player.health/PLAYER_HEALTH)
         pg.display.flip()
 
     def events(self):

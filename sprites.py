@@ -10,18 +10,18 @@ def collide_with_walls(sprite, group, dir):
     if dir == 'x':
         hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_box)
         if hits:
-            if sprite.vel.x > 0:
+            if hits[0].rect.centerx > sprite.hit_box.centerx:
                 sprite.pos.x = hits[0].rect.left - sprite.hit_box.width/2
-            if sprite.vel.x < 0:
+            if hits[0].rect.centerx < sprite.hit_box.centerx:
                 sprite.pos.x = hits[0].rect.right + sprite.hit_box.width/2
             sprite.vel.x = 0
             sprite.hit_box.centerx = sprite.pos.x
     if dir == 'y':
         hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_box)
         if hits:
-            if sprite.vel.y > 0:
+            if hits[0].rect.centery > sprite.hit_box.centery:
                 sprite.pos.y = hits[0].rect.top - sprite.hit_box.height/2
-            if sprite.vel.y < 0:
+            if hits[0].rect.centery < sprite.hit_box.centery:
                 sprite.pos.y = hits[0].rect.bottom + sprite.hit_box.height/2
             sprite.vel.y = 0
             sprite.hit_box.centery = sprite.pos.y
@@ -41,6 +41,7 @@ class Player(pg.sprite.Sprite):
         self.last_shot = 0
         self.shooting = False
         self.gunEquipped = 0
+        self.health = PLAYER_HEALTH
 
     def get_keys(self):
         self.rot_speed = 0
@@ -102,7 +103,7 @@ class Mob(pg.sprite.Sprite):
         self.acc = vec(0,0)
         self.rect.center = self.pos
         self.rot = 0
-        self.health = 100 + randint(-20,20)
+        self.health = MOB_HEALTH + randint(-20,20)
 
     def update(self):
         #find the angle between player and x axis i.e where zombie needs to look
