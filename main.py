@@ -10,7 +10,7 @@ from map import *
 def draw_player_health(surf, x, y, pct):
     if pct < 0:
         pct = 0
-    BAR_LENGTH = 100
+    BAR_LENGTH = 150
     BAR_HEIGHT = 20
     fill = pct * BAR_LENGTH
     outline_rect = pg.Rect(x,y, BAR_LENGTH, BAR_HEIGHT)
@@ -48,7 +48,7 @@ class Game:
         self.mob_image = pg.image.load(path.join(imageFolder, MOB_IMAGE)).convert_alpha()
         self.wall_image = pg.image.load(path.join(imageFolder, WALL_IMAGE)).convert_alpha()
         self.player_shooting = pg.image.load(path.join(imageFolder, PLAYER_SHOOTING)).convert_alpha()
-
+        self.health_overlay = pg.image.load(path.join(imageFolder, HEALTH_BAR_OVERLAY)).convert_alpha()
 
         #self.kitchenTileImage = pg.image.load(path.join(imageFolder, KITCHEN_TILE_IMAGE)).convert_alpha()
 
@@ -125,6 +125,7 @@ class Game:
                 self.screen.blit(playerHealthText, (0,40))
         #HUD FUNCTIoNS
         draw_player_health(self.screen, 10, 10, self.player.health/PLAYER_HEALTH)
+        self.screen.blit(self.health_overlay, (10, 10))
         pg.display.flip()
 
     def events(self):

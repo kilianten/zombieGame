@@ -45,6 +45,9 @@ GUN_OFFSET = 0
 PISTOL_IMAGE = "weapons\\handgun.png"
 PISTOL_DAMAGE = 10
 
+#HUD
+HEALTH_BAR_OVERLAY = "HUD\\healthBar.png"
+
 #how far off bullet is from player
 BULLET_OFFSET = vec(30, 0)
 
