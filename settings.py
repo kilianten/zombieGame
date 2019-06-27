@@ -47,6 +47,13 @@ PISTOL_DAMAGE = 10
 
 #HUD
 HEALTH_BAR_OVERLAY = "HUD\\healthBar.png"
+BAR_LENGTH = 150
+BAR_HEIGHT = 20
+WARNING_ANIM = 'hud\\infectedAnim\\'
+WARNING_FRAMES = 5
+WARNING_DURATION = 6
+INFECTED_BANNER = "hud\\infectedBanner.png"
+
 
 #how far off bullet is from player
 BULLET_OFFSET = vec(30, 0)
@@ -58,3 +65,8 @@ MOB_HIT_BOX = pg.Rect(0,0,35,40)
 MOB_HEALTH = 100
 MOB_DAMAGE = 10
 MOB_KNOCKBACK = 15
+INFECTION_CHANCE = 10 #change of player being infected DEFAULT 1/10
+INFECTION_TIME = 1000
+
+#items
+ANTIDOTE_IMAGE = 'items\\antidote.png'

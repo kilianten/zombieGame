@@ -36,12 +36,14 @@ class Player(pg.sprite.Sprite):
         self.hit_box = PLAYER_HIT_BOX
         self.hit_box.center = self.rect.center
         self.vel = vec(0,0)
-        self.pos = vec(x,y) * TILESIZE
+        self.pos = vec(x,y)
         self.rot = 0
         self.last_shot = 0
         self.shooting = False
         self.gunEquipped = 0
         self.health = PLAYER_HEALTH
+        self.infected = False
+        self.infection_time = 0
 
     def get_keys(self):
         self.rot_speed = 0
@@ -87,6 +89,8 @@ class Player(pg.sprite.Sprite):
         collide_with_walls(self, self.game.walls, 'x')
         self.hit_box.centery = self.pos.y
         collide_with_walls(self, self.game.walls, 'y')
+        if self.infected:
+            self.infection_time += 1
 
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -98,7 +102,7 @@ class Mob(pg.sprite.Sprite):
         #copy of once in settings
         self.hit_box = MOB_HIT_BOX.copy()
         self.hit_box_center = self.rect.center
-        self.pos = vec(x,y) * TILESIZE
+        self.pos = vec(x,y)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
         self.rect.center = self.pos
@@ -125,6 +129,10 @@ class Mob(pg.sprite.Sprite):
         self.rect.center = self.hit_box.center
         if self.health <= 0:
             self.kill()
+            temp = randint(0,10)
+            if temp > 4:
+                Item(self.game, self.pos, 'antidote')
+
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self, game, pos, dir, rot):
@@ -133,6 +141,7 @@ class Bullet(pg.sprite.Sprite):
         self.game = game
         self.image = pg.transform.rotate(game.bullet_image, rot)
         self.rect = self.image.get_rect()
+        self.hit_box = self.rect
         self.pos = vec(pos)
         self.rect.center = pos
         #innaccuracy
@@ -160,3 +169,46 @@ class Wall(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
+class Obstacle(pg.sprite.Sprite):
+    def __init__(self, game, x, y, w, h):
+        self.groups = game.walls
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.rect = pg.Rect(x, y, w, h)
+        self.x = x
+        self.y = y
+        self.rect.x = x
+        self.rect.y = y
+
+class Item(pg.sprite.Sprite):
+    def __init__(self, game, pos, type):
+        self.groups = game.all_sprites, game.items
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        if type == "antidote":
+            self.image = game.antidote_image
+            self.type = type
+        self.rect = self.image.get_rect()
+        self.hit_box = self.rect
+        self.pos = vec(pos)
+        self.rect.center = pos
+
+class Animation():
+    def __init__(self, game, frames, duration):
+        self.limit = frames
+        self.current_Frame = 0
+        self.animations = game.infected_anim
+        self.animation = self.animations[0]
+        self.counter = 0
+        self.duration = duration
+
+    def update(self):
+        if self.counter == self.duration:
+            self.current_Frame += 1
+            self.animation = self.animations[self.current_Frame]
+            if self.current_Frame >= self.limit:
+                self.current_Frame = 0
+            self.counter = 0
+        else:
+            self.counter += 1

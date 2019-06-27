@@ -1,5 +1,7 @@
 import pygame as pg
 import sys
+import glob
+import random
 from os import path
 from settings import *
 from sprites import *
@@ -10,13 +12,10 @@ from map import *
 def draw_player_health(surf, x, y, pct):
     if pct < 0:
         pct = 0
-    BAR_LENGTH = 150
-    BAR_HEIGHT = 20
     fill = pct * BAR_LENGTH
     outline_rect = pg.Rect(x,y, BAR_LENGTH, BAR_HEIGHT)
     fill_rect = pg.Rect(x,y, fill, BAR_HEIGHT)
     #change color depending on health status
-    print(pct)
     if pct > 0.6:
         col = GREEN
     elif pct > 0.3:
@@ -27,6 +26,13 @@ def draw_player_health(surf, x, y, pct):
     pg.draw.rect(surf, WHITE, outline_rect, 2)
 
 class Game:
+
+    def load_Anim(self, imageFolder, image_path):
+        animation = []
+        imageFiles = glob.glob(path.join(imageFolder, image_path) + "*")
+        for frame in imageFiles:
+            animation.append(pg.image.load(frame).convert_alpha())
+        return animation
 
     def __init__(self):
         pg.init()
@@ -42,13 +48,19 @@ class Game:
     def load_data(self):
         game_folder = path.dirname(__file__)
         imageFolder = path.join(game_folder, 'images')
-        self.map = Map (path.join(game_folder, 'map.txt'))
+        mapFolder = path.join(game_folder, 'maps')
+        self.map = TiledMap (path.join(mapFolder, 'basicLevel.tmx'))
+        self.map_img = self.map.make_map()
+        self.map_rect = self.map_img.get_rect()
         self.playerImage = pg.image.load(path.join(imageFolder, playerImage)).convert_alpha()
         self.bullet_image = pg.image.load(path.join(imageFolder, BULLET_IMAGE)).convert_alpha()
         self.mob_image = pg.image.load(path.join(imageFolder, MOB_IMAGE)).convert_alpha()
         self.wall_image = pg.image.load(path.join(imageFolder, WALL_IMAGE)).convert_alpha()
         self.player_shooting = pg.image.load(path.join(imageFolder, PLAYER_SHOOTING)).convert_alpha()
         self.health_overlay = pg.image.load(path.join(imageFolder, HEALTH_BAR_OVERLAY)).convert_alpha()
+        self.antidote_image = pg.image.load(path.join(imageFolder, ANTIDOTE_IMAGE)).convert_alpha()
+        self.infected_anim = self.load_Anim(imageFolder, WARNING_ANIM)
+        self.infected_banner = pg.image.load(path.join(imageFolder, INFECTED_BANNER)).convert_alpha()
 
         #self.kitchenTileImage = pg.image.load(path.join(imageFolder, KITCHEN_TILE_IMAGE)).convert_alpha()
 
@@ -58,18 +70,18 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
+        self.items = pg.sprite.Group()
         self.bullets = pg.sprite.Group()
-        for row, tiles in enumerate(self.map.data):
-            for col, tile in enumerate(tiles):
-                if tile == '1':
-                    Wall(self, col, row)
-                if tile == 'P':
-                    self.player = Player(self, col, row)
-                if tile == 'Z':
-                    self.mob = Mob(self, col, row)
-                #if tile == 'K':
-                    #self.screen.blit(self.kitchenTileImage, (col, row))
+        self.warningAnim = Animation(self, WARNING_FRAMES, WARNING_DURATION)
+        for tile_object in  self.map.tmxdata.objects:
+            if tile_object.name == 'player':
+                self.player = Player(self, tile_object.x, tile_object.y)
+            if tile_object.name == 'wall':
+                Obstacle(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
+            if tile_object.name == 'zombie':
+                Mob(self, tile_object.x, tile_object.y)
         self.camera = Camera(self.map.width, self.map.height)
+
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -95,13 +107,30 @@ class Game:
             hit.vel = vec(0,0)
             if self.player.health <= 0:
                 self.playing = False
+            randomNumber = randint(0, INFECTION_CHANCE)
+            if randomNumber == INFECTION_CHANCE: #if from 0 - NUMBER = NUMBER, then infect
+                self.player.infected = True
         if hits:
             self.player.pos += vec(MOB_KNOCKBACK, 0).rotate(-hits[0].rot)
+
         #bullet hits mobs
         hits = pg.sprite.groupcollide(self.mobs, self.bullets, False, True)
         for hit in hits:
             hit.health -= PISTOL_DAMAGE
             hit.vel = vec(0,0)
+
+        #if player hits item
+        hits = pg.sprite.spritecollide(self.player, self.items, True, collide_hit_box)
+        for hit in hits:
+            if hit.type == 'antidote':
+                self.player.infected = False
+                self.player.infection_time = 0
+
+        if self.player.infected == True:
+            self.warningAnim.update()
+            if self.player.infection_time == INFECTION_TIME:
+                print("infected: game over")
+                self.playing = False
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -110,22 +139,40 @@ class Game:
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def draw(self):
-        self.screen.fill(BGCOLOR)
+        self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
+        #self.screen.fill(BGCOLOR)
         #self.draw_grid()
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
             if self.devMode:
-                pg.draw.rect(self.screen, GREEN, self.player.hit_box, 2)
-                positionText = self.myfont.render('X: ' + '{0:.2f}'.format(self.player.pos.x) + ("     ") + 'Y: ' + '{0:.2f}'.format(self.player.pos.y) , False, (0, 0, 0))
-                FPSText = self.myfont.render("{:.2f}".format(self.clock.get_fps()), False, (0, 0, 0))
-                playerHealthText = self.myfont.render("{:.2f}".format(self.player.health/PLAYER_HEALTH), False, (0, 0, 0))
+                if isinstance(sprite, Player):
+                    pg.draw.rect(self.screen, GREEN, self.camera.apply_rect(sprite.hit_box),1)
+                elif isinstance(sprite, Mob):
+                    pg.draw.rect(self.screen, RED, self.camera.apply_rect(sprite.hit_box), 1)
+                elif isinstance(sprite, Bullet):
+                    pg.draw.rect(self.screen, YELLOW, self.camera.apply_rect(sprite.hit_box), 1)
 
-                self.screen.blit(positionText, (0,0))
-                self.screen.blit(FPSText, (0,20))
-                self.screen.blit(playerHealthText, (0,40))
+        #devmode
+        if self.devMode:
+            positionText = self.myfont.render('X: ' + '{0:.2f}'.format(self.player.pos.x) + ("     ") + 'Y: ' + '{0:.2f}'.format(self.player.pos.y) , False, (0, 0, 0))
+            FPSText = self.myfont.render("{:.2f}".format(self.clock.get_fps()), False, (0, 0, 0))
+            playerHealthText = self.myfont.render("{:.2f}".format(self.player.health/PLAYER_HEALTH), False, (0, 0, 0))
+            infectionText = self.myfont.render('Infection Level: ' + '{}'.format(self.player.infection_time) , False, (0, 0, 0))
+
+            for wall in self.walls:
+                pg.draw.rect(self.screen, WHITE, self.camera.apply_rect(wall.rect), 1)
+
+            self.screen.blit(positionText, (0,0))
+            self.screen.blit(FPSText, (0,20))
+            self.screen.blit(playerHealthText, (0,40))
+            self.screen.blit(infectionText, (0,60))
         #HUD FUNCTIoNS
-        draw_player_health(self.screen, 10, 10, self.player.health/PLAYER_HEALTH)
-        self.screen.blit(self.health_overlay, (10, 10))
+        #if player is infected, draw infected warning
+        if self.player.infected == True:
+            self.screen.blit(self.warningAnim.animation, (100,10))
+            self.screen.blit(self.infected_banner, (170, 10))
+        draw_player_health(self.screen, WIDTH - BAR_LENGTH - 10, 10, self.player.health/PLAYER_HEALTH)
+        self.screen.blit(self.health_overlay, (WIDTH - BAR_LENGTH - 10, 10))
         pg.display.flip()
 
     def events(self):
@@ -136,12 +183,9 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
-            if event.type == pg.KEYUP:
+            if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SLASH:
-                    if self.devMode:
-                        self.devMode = False
-                    else:
-                        self.devMode = True
+                    self.devMode = not self.devMode
 
     def show_start_screen(self):
         pass
