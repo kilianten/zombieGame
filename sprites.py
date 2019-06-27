@@ -108,6 +108,14 @@ class Mob(pg.sprite.Sprite):
         self.rect.center = self.pos
         self.rot = 0
         self.health = MOB_HEALTH + randint(-20,20)
+        self.speed =  choice(MOB_SPEEDS)
+
+    def avoid_mobs(self):
+        for mob in self.game.mobs:
+            if mob != self: #dont count self
+                dist = self.pos - mob.pos #distance betweem two mobs
+                if 0 < dist.length() < AVOiD_RADIUS:
+                    self.acc += dist.normalize()
 
     def update(self):
         #find the angle between player and x axis i.e where zombie needs to look
@@ -115,7 +123,10 @@ class Mob(pg.sprite.Sprite):
         self.image = pg.transform.rotate(self.game.mob_image, self.rot)
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
-        self.acc = vec(MOB_SPEED, 0).rotate(-self.rot)
+        self.acc = vec(1, 0).rotate(-self.rot)
+        #avoid fellow MOB_SPEED
+        self.avoid_mobs()
+        self.acc.scale_to_length(self.speed)
         self.acc += self.vel *-1
         self.vel += self.acc * self.game.dt
         #equation of motion
@@ -129,8 +140,8 @@ class Mob(pg.sprite.Sprite):
         self.rect.center = self.hit_box.center
         if self.health <= 0:
             self.kill()
-            temp = randint(0,10)
-            if temp > 4:
+            temp = randint(0,SPAWN_CHANCE_TOTAL)
+            if temp >= SPAWN_CHANCE_ANTIDOTE:
                 Item(self.game, self.pos, 'antidote')
 
 

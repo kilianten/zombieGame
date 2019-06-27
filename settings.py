@@ -60,13 +60,18 @@ BULLET_OFFSET = vec(30, 0)
 
 #mobs
 MOB_IMAGE = 'mobs\\zombie01_normal.png'
-MOB_SPEED = 150
+MOB_SPEEDS = [150, 100, 75, 125, 130, 160, 150, 150, 150]
 MOB_HIT_BOX = pg.Rect(0,0,35,40)
 MOB_HEALTH = 100
 MOB_DAMAGE = 10
 MOB_KNOCKBACK = 15
-INFECTION_CHANCE = 10 #change of player being infected DEFAULT 1/10
-INFECTION_TIME = 1000
+INFECTION_CHANCE = 20 #change of player being infected DEFAULT 1/10
+INFECTION_TIME = 2000
+AVOiD_RADIUS = 50
 
 #items
 ANTIDOTE_IMAGE = 'items\\antidote.png'
+
+#DROPS
+SPAWN_CHANCE_TOTAL = 100
+SPAWN_CHANCE_ANTIDOTE = 5
