@@ -33,6 +33,7 @@ class Player(pg.sprite.Sprite):
         self.game = game
         self.image = game.playerImage
         self.rect = self.image.get_rect()
+        self.rect.center = (x,y)
         self.hit_box = PLAYER_HIT_BOX
         self.hit_box.center = self.rect.center
         self.vel = vec(0,0)
@@ -99,6 +100,7 @@ class Mob(pg.sprite.Sprite):
         self.game = game
         self.image = game.mob_image
         self.rect = self.image.get_rect()
+        self.rect.center = (x,y)
         #copy of once in settings
         self.hit_box = MOB_HIT_BOX.copy()
         self.hit_box_center = self.rect.center
@@ -140,10 +142,9 @@ class Mob(pg.sprite.Sprite):
         self.rect.center = self.hit_box.center
         if self.health <= 0:
             self.kill()
-            temp = randint(0,SPAWN_CHANCE_TOTAL)
-            if temp >= SPAWN_CHANCE_ANTIDOTE:
+            fromTotal = randint(0,SPAWN_CHANCE_TOTAL)
+            if SPAWN_CHANCE_ANTIDOTE >= fromTotal:
                 Item(self.game, self.pos, 'antidote')
-
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self, game, pos, dir, rot):
@@ -159,7 +160,6 @@ class Bullet(pg.sprite.Sprite):
         spread = uniform (-GUN_SPREAD, GUN_SPREAD)
         self.vel = dir.rotate(spread) * BULLET_SPEED
         self.spawn_time = pg.time.get_ticks()
-
 
     def update(self):
         self.pos += self.vel * self.game.dt
@@ -223,3 +223,45 @@ class Animation():
             self.counter = 0
         else:
             self.counter += 1
+
+class Vinyl(pg.sprite.Sprite):
+    def __init__(self, game, pos, duration):
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.image = game.vinyl_anim[0]
+        self.animation = game.vinyl_anim
+        self.disc_image_num = 0
+        self.image_vinyl = game.vinyl_disc_anim[self.disc_image_num]
+        #self.secondImage = game.vinyl_one
+        self.rect = self.image.get_rect()
+        self.pos = pos
+        self.rect.center = pos
+        self.hit_box = self.rect
+        self.pos = vec(pos)
+        self.isPlayingVinyl = False
+        self.counter = 0
+        self.curr_image = 0
+        self.duration = 200
+        self.game = game
+        self.playedVinyl = False
+
+
+    def update(self):
+        if self.playedVinyl == True:
+            self.counter += 2
+            if self.counter % (VINYL_ROTATE_SPEED * 10) == 0:
+                if self.disc_image_num == len(self.game.vinyl_disc_anim):
+                    self.disc_image_num = 0
+                self.image_vinyl = self.game.vinyl_disc_anim[self.disc_image_num]
+                self.disc_image_num += 1
+        if self.isPlayingVinyl:
+            self.playedVinyl = True
+            if self.counter == self.duration:
+                if self.curr_image < len(self.animation):
+                    self.curr_image = 3
+                self.curr_image += 1
+                print(self.curr_image)
+                self.image = self.animation[self.curr_image]
+                self.counter = 0
+                if self.curr_image == len(self.animation) - 2:
+                    self.isPlayingVinyl = False

@@ -27,11 +27,15 @@ def draw_player_health(surf, x, y, pct):
 
 class Game:
 
-    def load_Anim(self, imageFolder, image_path):
+    def load_Anim(self, imageFolder, images):
         animation = []
-        imageFiles = glob.glob(path.join(imageFolder, image_path) + "*")
-        for frame in imageFiles:
-            animation.append(pg.image.load(frame).convert_alpha())
+        images = sorted(images) #make sure list is in alphabetic order
+        for frame in images:
+            loadedImage = pg.image.load(path.join(imageFolder, frame))
+            animation.append(loadedImage)
+        #imageFiles = glob.glob(path.join(imageFolder, image_path) + "*")
+        #for frame in imageFiles:
+            #animation.append(pg.image.load(frame).convert_alpha())
         return animation
 
     def __init__(self):
@@ -61,9 +65,9 @@ class Game:
         self.antidote_image = pg.image.load(path.join(imageFolder, ANTIDOTE_IMAGE)).convert_alpha()
         self.infected_anim = self.load_Anim(imageFolder, WARNING_ANIM)
         self.infected_banner = pg.image.load(path.join(imageFolder, INFECTED_BANNER)).convert_alpha()
-
-        #self.kitchenTileImage = pg.image.load(path.join(imageFolder, KITCHEN_TILE_IMAGE)).convert_alpha()
-
+        self.medkit_image = pg.image.load(path.join(imageFolder, MEDKIT_IMAGE)).convert_alpha()
+        self.vinyl_anim = self.load_Anim(imageFolder, VINYL_IMAGES)
+        self.vinyl_disc_anim = self.load_Anim(imageFolder, VINYL_DISC_IMAGES)
 
     def new(self):
         # initialize all variables and do all the setup for a new game
@@ -80,6 +84,9 @@ class Game:
                 Obstacle(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.name == 'zombie':
                 Mob(self, tile_object.x, tile_object.y)
+            if tile_object.name == 'wallVinyl':
+                Obstacle(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
+                self.vinyl = Vinyl(self, (tile_object.x + tile_object.width/2, tile_object.y + tile_object.height/2), VINYL_DURATION * 10)
         self.camera = Camera(self.map.width, self.map.height)
 
 
@@ -119,12 +126,21 @@ class Game:
             hit.health -= PISTOL_DAMAGE
             hit.vel = vec(0,0)
 
+        #PlayVINYL
+        collisionHappened = pg.sprite.collide_rect(self.player, self.vinyl)
+        if collisionHappened:
+            self.vinyl.isPlayingVinyl = True
         #if player hits item
         hits = pg.sprite.spritecollide(self.player, self.items, True, collide_hit_box)
         for hit in hits:
             if hit.type == 'antidote':
                 self.player.infected = False
                 self.player.infection_time = 0
+            if hit.type == 'medkit':
+                if self.player.health + MEDKIT_BOOST > PLAYER_HEALTH:
+                    self.player.health = PLAYER_HEALTH
+                else:
+                    self.player.health += MEDKIT_BOOST
 
         if self.player.infected == True:
             self.warningAnim.update()
@@ -141,8 +157,10 @@ class Game:
     def draw(self):
         self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
         #self.screen.fill(BGCOLOR)
-        #self.draw_grid()
+        #self.draw_grid()          
         for sprite in self.all_sprites:
+            if isinstance(sprite, Vinyl) and sprite.playedVinyl:
+                self.screen.blit(sprite.image_vinyl, self.camera.apply(sprite))
             self.screen.blit(sprite.image, self.camera.apply(sprite))
             if self.devMode:
                 if isinstance(sprite, Player):
@@ -151,7 +169,6 @@ class Game:
                     pg.draw.rect(self.screen, RED, self.camera.apply_rect(sprite.hit_box), 1)
                 elif isinstance(sprite, Bullet):
                     pg.draw.rect(self.screen, YELLOW, self.camera.apply_rect(sprite.hit_box), 1)
-
         #devmode
         if self.devMode:
             positionText = self.myfont.render('X: ' + '{0:.2f}'.format(self.player.pos.x) + ("     ") + 'Y: ' + '{0:.2f}'.format(self.player.pos.y) , False, (0, 0, 0))

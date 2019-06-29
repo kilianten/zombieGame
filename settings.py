@@ -49,7 +49,7 @@ PISTOL_DAMAGE = 10
 HEALTH_BAR_OVERLAY = "HUD\\healthBar.png"
 BAR_LENGTH = 150
 BAR_HEIGHT = 20
-WARNING_ANIM = 'hud\\infectedAnim\\'
+WARNING_ANIM = ["HUD\\infectedAnim\\Sprite-0002.png", "HUD\\infectedAnim\\Sprite-0003.png", "HUD\\infectedAnim\\Sprite-0004.png", "HUD\\infectedAnim\\Sprite-0005.png", "HUD\\infectedAnim\\Sprite-0006.png", "HUD\\infectedAnim\\Sprite-0007.png", "HUD\\infectedAnim\\Sprite-0008.png"]
 WARNING_FRAMES = 5
 WARNING_DURATION = 6
 INFECTED_BANNER = "hud\\infectedBanner.png"
@@ -71,7 +71,15 @@ AVOiD_RADIUS = 50
 
 #items
 ANTIDOTE_IMAGE = 'items\\antidote.png'
+MEDKIT_IMAGE = 'items\\medkit.png'
+MEDKIT_BOOST = 50
 
 #DROPS
 SPAWN_CHANCE_TOTAL = 100
-SPAWN_CHANCE_ANTIDOTE = 5
+SPAWN_CHANCE_ANTIDOTE = 30
+
+#Vinyl
+VINYL_IMAGES = ["misc\\vinyl\\vinyl1.png", "misc\\vinyl\\vinyl2.png", "misc\\vinyl\\vinyl3.png", "misc\\vinyl\\vinyl4.png", "misc\\vinyl\\vinyl5.png"]
+VINYL_DISC_IMAGES = ["misc\\vinylDisc\\strVinyl01.png", "misc\\vinylDisc\\strVinyl09.png", "misc\\vinylDisc\\strVinyl02.png", "misc\\vinylDisc\\strVinyl03.png", "misc\\vinylDisc\\strVinyl04.png","misc\\vinylDisc\\strVinyl07.png","misc\\vinylDisc\\strVinyl10.png", "misc\\vinylDisc\\strVinyl08.png"]
+VINYL_DURATION = 2
+VINYL_ROTATE_SPEED = 2
