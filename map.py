@@ -62,3 +62,15 @@ class Camera:
         y = max(-(self.height - HEIGHT), y)
 
         self.camera = pg.Rect(x,y, self.height, self.width)
+
+class Level:
+    def __init__(self, numberOfLevels, zombiesPerLevel):
+        self.numberOfLevels = numberOfLevels
+        self.zombiesPerLevel = zombiesPerLevel
+        self.startLevel = zombiesPerLevel
+
+    def update(self):
+        if self.zombiesPerLevel <= 0:
+            #display new level
+            self.startLevel += LEVEL_ADD #increase number of zombies every level
+            self.zombiesPerLevel = self.startLevel

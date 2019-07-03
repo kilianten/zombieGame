@@ -119,6 +119,17 @@ class Mob(pg.sprite.Sprite):
                 if 0 < dist.length() < AVOiD_RADIUS:
                     self.acc += dist.normalize()
 
+    def drop_items(self, game, pos): #decides what/if item drops
+        counter = 1
+        rand = randint(1, TOTAL_CHANCE) #random number from 0 - total chance
+        for key, value in ITEM_DROP_CHANCES.items():
+            print(key, value, rand)
+            if value >= rand:
+                Item(game, pos, key)
+                break
+            else:
+                counter+= value
+
     def update(self):
         #find the angle between player and x axis i.e where zombie needs to look
         self.rot = (self.game.player.pos - self.pos).angle_to(vec(1,0))
@@ -142,9 +153,10 @@ class Mob(pg.sprite.Sprite):
         self.rect.center = self.hit_box.center
         if self.health <= 0:
             self.kill()
-            fromTotal = randint(0,SPAWN_CHANCE_TOTAL)
+            self.drop_items(self.game, self.pos)
+            '''fromTotal = randint(0,SPAWN_CHANCE_TOTAL)
             if SPAWN_CHANCE_ANTIDOTE >= fromTotal:
-                Item(self.game, self.pos, 'antidote')
+                Item(self.game, self.pos, 'antidote')'''
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self, game, pos, dir, rot):
@@ -199,7 +211,9 @@ class Item(pg.sprite.Sprite):
         self.game = game
         if type == "antidote":
             self.image = game.antidote_image
-            self.type = type
+        elif type == "medkit":
+            self.image= game.medkit_image
+        self.type = type
         self.rect = self.image.get_rect()
         self.hit_box = self.rect
         self.pos = vec(pos)
@@ -260,7 +274,6 @@ class Vinyl(pg.sprite.Sprite):
                 if self.curr_image < len(self.animation):
                     self.curr_image = 3
                 self.curr_image += 1
-                print(self.curr_image)
                 self.image = self.animation[self.curr_image]
                 self.counter = 0
                 if self.curr_image == len(self.animation) - 2:

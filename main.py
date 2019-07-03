@@ -88,7 +88,7 @@ class Game:
                 Obstacle(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
                 self.vinyl = Vinyl(self, (tile_object.x + tile_object.width/2, tile_object.y + tile_object.height/2), VINYL_DURATION * 10)
         self.camera = Camera(self.map.width, self.map.height)
-
+        self.level = Level(LEVEL_1_STAGES, LEVEL_1_ZOMBIESAMMOUNT)
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -148,6 +148,11 @@ class Game:
                 print("infected: game over")
                 self.playing = False
 
+        self.level.update()
+        if(self.level.zombiesPerLevel < MAX_ZOMBIES and self.level.zombiesPerLevel > 0):
+            self.level.zombiesPerLevel -= 1
+            Mob(self, self.camera.width + randint(10, 20), self.camera.width + randint(10, 20))
+
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
             pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
@@ -157,7 +162,7 @@ class Game:
     def draw(self):
         self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
         #self.screen.fill(BGCOLOR)
-        #self.draw_grid()          
+        #self.draw_grid()
         for sprite in self.all_sprites:
             if isinstance(sprite, Vinyl) and sprite.playedVinyl:
                 self.screen.blit(sprite.image_vinyl, self.camera.apply(sprite))
@@ -173,8 +178,9 @@ class Game:
         if self.devMode:
             positionText = self.myfont.render('X: ' + '{0:.2f}'.format(self.player.pos.x) + ("     ") + 'Y: ' + '{0:.2f}'.format(self.player.pos.y) , False, (0, 0, 0))
             FPSText = self.myfont.render("{:.2f}".format(self.clock.get_fps()), False, (0, 0, 0))
-            playerHealthText = self.myfont.render("{:.2f}".format(self.player.health/PLAYER_HEALTH), False, (0, 0, 0))
+            playerHealthText = self.myfont.render("{:.2f}".format(self.player.health/PLAYER_HEALTH), False,       (0, 0, 0))
             infectionText = self.myfont.render('Infection Level: ' + '{}'.format(self.player.infection_time) , False, (0, 0, 0))
+            mobText = self.myfont.render('ZOMBIES LEFT: ' + '{}'.format(self.level.zombiesPerLevel) + '{}', False, (0, 0, 0))
 
             for wall in self.walls:
                 pg.draw.rect(self.screen, WHITE, self.camera.apply_rect(wall.rect), 1)
@@ -183,6 +189,7 @@ class Game:
             self.screen.blit(FPSText, (0,20))
             self.screen.blit(playerHealthText, (0,40))
             self.screen.blit(infectionText, (0,60))
+            self.screen.blit(mobText, (0,80))
         #HUD FUNCTIoNS
         #if player is infected, draw infected warning
         if self.player.infected == True:
