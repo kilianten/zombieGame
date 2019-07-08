@@ -149,9 +149,10 @@ class Game:
                 self.playing = False
 
         self.level.update()
-        if(self.level.zombiesPerLevel < MAX_ZOMBIES and self.level.zombiesPerLevel > 0):
-            self.level.zombiesPerLevel -= 1
-            Mob(self, self.camera.width + randint(10, 20), self.camera.width + randint(10, 20))
+        if(len(self.mobs) < 8):
+            #self.level.zombiesPerLevel -= 1
+            #Item(self, (10,10), "medkit")
+            Mob(self, 1000,-10)
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -180,7 +181,7 @@ class Game:
             FPSText = self.myfont.render("{:.2f}".format(self.clock.get_fps()), False, (0, 0, 0))
             playerHealthText = self.myfont.render("{:.2f}".format(self.player.health/PLAYER_HEALTH), False,       (0, 0, 0))
             infectionText = self.myfont.render('Infection Level: ' + '{}'.format(self.player.infection_time) , False, (0, 0, 0))
-            mobText = self.myfont.render('ZOMBIES LEFT: ' + '{}'.format(self.level.zombiesPerLevel) + '{}', False, (0, 0, 0))
+            mobText = self.myfont.render('ZOMBIES LEFT: ' + '{}, ZOMBIES IN LEVEL: {}'.format(self.level.zombiesPerLevel, len(self.mobs)) + '{}', False, (0, 0, 0))
 
             for wall in self.walls:
                 pg.draw.rect(self.screen, WHITE, self.camera.apply_rect(wall.rect), 1)
