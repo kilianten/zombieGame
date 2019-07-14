@@ -30,7 +30,6 @@ class Game:
     def spawn_Mob(self):
         Mob(self, self.map.width + randint(-100, 100), self.map.height + randint(-100, 100))
 
-
     def load_Anim(self, imageFolder, images):
         animation = []
         images = sorted(images) #make sure list is in alphabetic order
@@ -52,6 +51,8 @@ class Game:
         pg.key.set_repeat(500, 100)
         self.load_data()
         self.devMode = False
+        self.isNewLevel = True
+        self.counter = 0
 
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -72,6 +73,7 @@ class Game:
         self.medkit_image = pg.image.load(path.join(imageFolder, MEDKIT_IMAGE)).convert_alpha()
         self.vinyl_anim = self.load_Anim(imageFolder, VINYL_IMAGES)
         self.vinyl_disc_anim = self.load_Anim(imageFolder, VINYL_DISC_IMAGES)
+        self.level_HUD =  pg.image.load(path.join(imageFolder, LEVEL_BANNER)).convert_alpha()
 
     def new(self):
         # initialize all variables and do all the setup for a new game
@@ -108,6 +110,7 @@ class Game:
         sys.exit()
 
     def update(self):
+        self.counter += 1
         # update portion of the game loop
         self.all_sprites.update()
         self.camera.update(self.player)
@@ -168,6 +171,7 @@ class Game:
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def draw(self):
+        #clear screen
         self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
         #self.screen.fill(BGCOLOR)
         #self.draw_grid()
@@ -188,7 +192,7 @@ class Game:
             FPSText = self.myfont.render("{:.2f}".format(self.clock.get_fps()), False, (0, 0, 0))
             playerHealthText = self.myfont.render("{:.2f}".format(self.player.health/PLAYER_HEALTH), False,       (0, 0, 0))
             infectionText = self.myfont.render('Infection Level: ' + '{}'.format(self.player.infection_time) , False, (0, 0, 0))
-            mobText = self.myfont.render('ZOMBIES LEFT: ' + '{}, ZOMBIES IN LEVEL: {}'.format(self.level.zombiesPerLevel, len(self.mobs)) + '{}', False, (0, 0, 0))
+            mobText = self.myfont.render('ZOMBIES LEFT: ' + '{}, ZOMBIES IN LEVEL: {}, Level: {}'.format(self.level.zombiesPerLevel, len(self.mobs), self.level.numberOfLevels), False, (0, 0, 0))
 
             for wall in self.walls:
                 pg.draw.rect(self.screen, WHITE, self.camera.apply_rect(wall.rect), 1)
@@ -205,6 +209,15 @@ class Game:
             self.screen.blit(self.infected_banner, (170, 10))
         draw_player_health(self.screen, WIDTH - BAR_LENGTH - 10, 10, self.player.health/PLAYER_HEALTH)
         self.screen.blit(self.health_overlay, (WIDTH - BAR_LENGTH - 10, 10))
+
+        #draw levelHUD if new level
+        if(self.isNewLevel):
+            self.level_HUD.set_alpha(0)
+
+            self.screen.blit(self.level_HUD, (WIDTH/2 - 100,HEIGHT/2))
+            print(self.counter)
+            if(self.counter % 60 == 0):
+                pass
         pg.display.flip()
 
     def events(self):

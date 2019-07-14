@@ -76,3 +76,4 @@ class Level:
             self.startLevel += LEVEL_ADD #increase number of zombies every level
             self.zombiesPerLevel = self.startLevel
             self.numberOfLevels += 1
+            self.game.isNewLevel = True
