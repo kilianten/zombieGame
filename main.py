@@ -27,6 +27,10 @@ def draw_player_health(surf, x, y, pct):
 
 class Game:
 
+    def spawn_Mob(self):
+        Mob(self, self.map.width + randint(-100, 100), self.map.height + randint(-100, 100))
+
+
     def load_Anim(self, imageFolder, images):
         animation = []
         images = sorted(images) #make sure list is in alphabetic order
@@ -88,7 +92,7 @@ class Game:
                 Obstacle(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
                 self.vinyl = Vinyl(self, (tile_object.x + tile_object.width/2, tile_object.y + tile_object.height/2), VINYL_DURATION * 10)
         self.camera = Camera(self.map.width, self.map.height)
-        self.level = Level(LEVEL_1_STAGES, LEVEL_1_ZOMBIESAMMOUNT)
+        self.level = Level(self, LEVEL_1_STAGES, LEVEL_1_ZOMBIESAMMOUNT)
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -149,10 +153,13 @@ class Game:
                 self.playing = False
 
         self.level.update()
-        if(len(self.mobs) < 8):
+
+        #spawnZombies
+        if(len(self.mobs) < MAX_ZOMBIES and self.level.zombiesPerLevel > 0):
             #self.level.zombiesPerLevel -= 1
             #Item(self, (10,10), "medkit")
-            Mob(self, 1000,-10)
+            self.spawn_Mob()
+            self.level.zombiesPerLevel -= 1
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
