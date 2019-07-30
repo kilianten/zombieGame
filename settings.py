@@ -53,8 +53,8 @@ WARNING_ANIM = ["HUD\\infectedAnim\\Sprite-0002.png", "HUD\\infectedAnim\\Sprite
 WARNING_FRAMES = 5
 WARNING_DURATION = 6
 INFECTED_BANNER = "hud\\infectedBanner.png"
-LEVEL_BANNER = "HUD\\LevelBanner.png"
-
+LEVEL_BANNER = ["HUD\\levelAnim\\LevelHUD01.png", "HUD\\levelAnim\\LevelHUD02.png", "HUD\\levelAnim\\LevelHUD03.png", "HUD\\levelAnim\\LevelHUD04.png", "HUD\\levelAnim\\LevelHUD05.png", "HUD\\levelAnim\\LevelHUD06.png", "HUD\\levelAnim\\LevelHUD07.png", "HUD\\levelAnim\\LevelHUD08.png", "HUD\\levelAnim\\LevelHUD09.png", "HUD\\levelAnim\\LevelHUD10.png", "HUD\\levelAnim\\LevelHUD11.png", "HUD\\levelAnim\\LevelHUD12.png"]
+LEVEL_BANNER_DURATION = .01 #quarter a second
 
 #how far off bullet is from player
 BULLET_OFFSET = vec(30, 0)
@@ -63,7 +63,7 @@ BULLET_OFFSET = vec(30, 0)
 MOB_IMAGE = 'mobs\\zombie01_normal.png'
 MOB_SPEEDS =  [250,290]#[190, 160, 95, 125, 130, 180, 150, 150, 150]
 MOB_HIT_BOX = pg.Rect(0,0,35,40)
-MOB_HEALTH = 100
+MOB_HEALTH = 1
 MOB_DAMAGE = 10
 MOB_KNOCKBACK = 15
 INFECTION_CHANCE = 20 #change of player being infected DEFAULT 1/10

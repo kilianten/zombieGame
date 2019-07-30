@@ -45,14 +45,16 @@ class Game:
         pg.init()
         pg.font.init()
         self.myfont = pg.font.SysFont('Arial Header', 25)
+        self.levelfont = pg.font.Font(None, 60)
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.load_data()
         self.devMode = False
-        self.isNewLevel = True
+        self.isNewLevel = False
         self.counter = 0
+        self.levelHUDImage = 0
 
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -73,7 +75,9 @@ class Game:
         self.medkit_image = pg.image.load(path.join(imageFolder, MEDKIT_IMAGE)).convert_alpha()
         self.vinyl_anim = self.load_Anim(imageFolder, VINYL_IMAGES)
         self.vinyl_disc_anim = self.load_Anim(imageFolder, VINYL_DISC_IMAGES)
-        self.level_HUD =  pg.image.load(path.join(imageFolder, LEVEL_BANNER)).convert_alpha()
+        self.level_HUD_anim = self.load_Anim(imageFolder, LEVEL_BANNER)
+        self.level_HUD = self.level_HUD_anim[0]
+
 
     def new(self):
         # initialize all variables and do all the setup for a new game
@@ -212,12 +216,22 @@ class Game:
 
         #draw levelHUD if new level
         if(self.isNewLevel):
-            self.level_HUD.set_alpha(0)
+            print(self.levelHUDImage);
+            print(self.levelHUDImage < (len(self.level_HUD_anim) - 1))
+            print(self.level.numberOfLevels);
+            if self.levelHUDImage < (len(self.level_HUD_anim) - 1):
+                print("well that worked");
+                if(self.counter % 20  == 0): #duration converted to seconds, will happen once a second
+                    self.levelHUDImage = self.levelHUDImage + 1
+                    print("entered");
+                    self.level_HUD = self.level_HUD_anim[self.levelHUDImage]
+                levelText = self.levelfont.render("{}".format(self.level.numberOfLevels), False, (0, 0, 0))
+                self.screen.blit(levelText, (WIDTH/2 + 20,HEIGHT/4))
+                self.screen.blit(self.level_HUD, (WIDTH/2 - 100,HEIGHT/4))
+            else:
+                print("newlevelfalse")
+                self.isNewLevel = False
 
-            self.screen.blit(self.level_HUD, (WIDTH/2 - 100,HEIGHT/2))
-            print(self.counter)
-            if(self.counter % 60 == 0):
-                pass
         pg.display.flip()
 
     def events(self):
