@@ -94,6 +94,14 @@ class Game:
         self.vinyl_disc_anim = self.load_Anim(imageFolder, VINYL_DISC_IMAGES)
         self.level_HUD_anim = self.load_Anim(imageFolder, LEVEL_BANNER)
         self.level_HUD = self.level_HUD_anim[0]
+        #lighting effect
+        self.fog = pg.Surface((WIDTH, HEIGHT))
+        self.fog.fill(NIGHT_COLOUR)
+        self.light_mask = pg.image.load(path.join(imageFolder, LIGHT_MASK)).convert_alpha()
+        self.light_mask = pg.transform.scale(self.light_mask, LIGHT_RADIUS)
+        self.light_rect = self.light_mask.get_rect()
+
+
         #sound loading
         pg.mixer.music.load(path.join(soundFolder, BG_MUSIC))
         self.effects_sounds = {}
@@ -211,6 +219,13 @@ class Game:
         for y in range(0, HEIGHT, TILESIZE):
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
+    def render_fog(self):
+        #draw light mask
+        self.fog.fill(NIGHT_COLOUR)
+        self.light_rect.center = self.camera.apply(self.player).center
+        self.fog.blit(self.light_mask, self.light_rect)
+        self.screen.blit(self.fog, (0,0), special_flags=pg.BLEND_MULT)
+
     def draw(self):
         #clear screen
         self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
@@ -243,6 +258,10 @@ class Game:
             self.screen.blit(playerHealthText, (0,40))
             self.screen.blit(infectionText, (0,60))
             self.screen.blit(mobText, (0,80))
+
+        #draw fog
+        self.render_fog()
+
         #HUD FUNCTIoNS
         #if player is infected, draw infected warning
         if self.player.infected == True:

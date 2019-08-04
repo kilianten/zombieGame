@@ -9,6 +9,7 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BROWN = (106,55,5)
+NIGHT_COLOUR = (15, 15, 15);
 
 # game settings
 WIDTH = 1024   # 16 * 64 or 32 * 32 or 64 * 16
@@ -63,7 +64,7 @@ BULLET_OFFSET = vec(30, 0)
 MOB_IMAGE = 'mobs\\zombie01_normal.png'
 MOB_SPEEDS =  [250,290]#[190, 160, 95, 125, 130, 180, 150, 150, 150]
 MOB_HIT_BOX = pg.Rect(0,0,35,40)
-MOB_HEALTH = 1
+MOB_HEALTH = 100
 MOB_DAMAGE = 10
 MOB_KNOCKBACK = 15
 INFECTION_CHANCE = 20 #change of player being infected DEFAULT 1/10
@@ -99,3 +100,7 @@ LEVEL_1_STAGES = 5
 MAX_ZOMBIES = 70
 LEVEL_ADD = 3 #ammount of zombies added every level
 LEVEL_1_ZOMBIESAMMOUNT = 10
+
+#effects
+LIGHT_MASK = "misc\\light.png"
+LIGHT_RADIUS = (500,500)
