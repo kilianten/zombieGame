@@ -81,6 +81,11 @@ BOB_SPEED = 0.4 #how fast item bobs up and down
 TOTAL_CHANCE = 20 #total chance, chance of all items - total_chance = chance nothing drops. Must be greated than sum of all items chance
 ITEM_DROP_CHANCES = {'antidote': 2, 'medkit': 4}
 
+#SOuNDS
+BG_MUSIC = 'atmosphere.wav'
+NEW_LEVEL = 'goodLuck.wav'
+INFECTED = 'shock.wav'
+EFFECTS_SOUNDS = {'level_start':'goodLuck.wav', 'pick_up':'pickup.wav'}
 
 #Vinyl
 VINYL_IMAGES = ["misc\\vinyl\\vinyl1.png", "misc\\vinyl\\vinyl2.png", "misc\\vinyl\\vinyl3.png", "misc\\vinyl\\vinyl4.png", "misc\\vinyl\\vinyl5.png"]

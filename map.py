@@ -73,9 +73,9 @@ class Level:
     def update(self):
         if self.zombiesPerLevel <= 0 and len(self.game.mobs) <= 0:
             #display new level
-            print("newLevl");
             self.startLevel += LEVEL_ADD #increase number of zombies every level
             self.zombiesPerLevel = self.startLevel
             self.numberOfLevels += 1
             self.game.isNewLevel = True
+            self.game.effects_sounds['level_start'].play()
             self.game.levelHUDImage = 0

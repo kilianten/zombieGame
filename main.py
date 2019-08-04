@@ -60,6 +60,7 @@ class Game:
         game_folder = path.dirname(__file__)
         imageFolder = path.join(game_folder, 'images')
         mapFolder = path.join(game_folder, 'maps')
+        soundFolder = path.join(game_folder, 'sounds')
         self.map = TiledMap (path.join(mapFolder, 'basicLevel.tmx'))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
@@ -77,7 +78,11 @@ class Game:
         self.vinyl_disc_anim = self.load_Anim(imageFolder, VINYL_DISC_IMAGES)
         self.level_HUD_anim = self.load_Anim(imageFolder, LEVEL_BANNER)
         self.level_HUD = self.level_HUD_anim[0]
-
+        #sound loading
+        pg.mixer.music.load(path.join(soundFolder, BG_MUSIC))
+        self.effects_sounds = {}
+        for type in EFFECTS_SOUNDS:
+            self.effects_sounds[type] = pg.mixer.Sound(path.join(soundFolder, EFFECTS_SOUNDS[type]))
 
     def new(self):
         # initialize all variables and do all the setup for a new game
@@ -103,6 +108,7 @@ class Game:
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
+        pg.mixer.music.play(loops=-1)
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
@@ -229,7 +235,6 @@ class Game:
                 self.screen.blit(levelText, (WIDTH/2 + 20,HEIGHT/4))
                 self.screen.blit(self.level_HUD, (WIDTH/2 - 100,HEIGHT/4))
             else:
-                print("newlevelfalse")
                 self.isNewLevel = False
 
         pg.display.flip()
