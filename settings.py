@@ -74,6 +74,8 @@ AVOiD_RADIUS = 50
 ANTIDOTE_IMAGE = 'items\\antidote.png'
 MEDKIT_IMAGE = 'items\\medkit.png'
 MEDKIT_BOOST = 50
+BOB_RANGE =20 #how far bobs
+BOB_SPEED = 0.4 #how fast item bobs up and down
 
 #DROPS
 TOTAL_CHANCE = 20 #total chance, chance of all items - total_chance = chance nothing drops. Must be greated than sum of all items chance
