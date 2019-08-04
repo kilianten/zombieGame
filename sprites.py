@@ -67,6 +67,7 @@ class Player(pg.sprite.Sprite):
                 #so bullet spawns from gun not center of player
                 pos = self.pos + BULLET_OFFSET.rotate(-self.rot)
                 Bullet(self.game, pos, dir, self.rot)
+                choice(self.game.weapon_sounds['gunshot']).play()
                 self.shooting = True
                 #kickback
                 self.vel = vec(-KICKBACK, 0).rotate(-self.rot)

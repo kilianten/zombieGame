@@ -84,8 +84,9 @@ ITEM_DROP_CHANCES = {'antidote': 2, 'medkit': 4}
 #SOuNDS
 BG_MUSIC = 'atmosphere.wav'
 NEW_LEVEL = 'goodLuck.wav'
-INFECTED = 'shock.wav'
-EFFECTS_SOUNDS = {'level_start':'goodLuck.wav', 'pick_up':'pickup.wav'}
+EFFECTS_SOUNDS = {'level_start':'goodLuck.wav', 'pick_up':'pickup.wav', 'infected' : 'shock.wav'}
+WEAPONS_SOUNDS = {'gunshot.wav':'gunshot'}
+ZOMBIE_GRUNT_SOUNDS = {'zombie1':'zombie1.wav', 'zombie2':'zombie2.wav'}
 
 #Vinyl
 VINYL_IMAGES = ["misc\\vinyl\\vinyl1.png", "misc\\vinyl\\vinyl2.png", "misc\\vinyl\\vinyl3.png", "misc\\vinyl\\vinyl4.png", "misc\\vinyl\\vinyl5.png"]

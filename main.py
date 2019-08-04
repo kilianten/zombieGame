@@ -83,6 +83,13 @@ class Game:
         self.effects_sounds = {}
         for type in EFFECTS_SOUNDS:
             self.effects_sounds[type] = pg.mixer.Sound(path.join(soundFolder, EFFECTS_SOUNDS[type]))
+        self.weapon_sounds = {}
+        self.weapon_sounds['gunshot'] = []
+        for snd in WEAPONS_SOUNDS:
+            print(snd )
+            self.weapon_sounds['gunshot'].append(pg.mixer.Sound(path.join(soundFolder, snd)))
+        self.zombie_grunt_sounds = []
+        for snd in ZOMBIE
 
     def new(self):
         # initialize all variables and do all the setup for a new game
@@ -134,6 +141,7 @@ class Game:
             randomNumber = randint(0, INFECTION_CHANCE)
             if randomNumber == INFECTION_CHANCE: #if from 0 - NUMBER = NUMBER, then infect
                 self.player.infected = True
+                self.effects_sounds['infected'].play()
         if hits:
             self.player.pos += vec(MOB_KNOCKBACK, 0).rotate(-hits[0].rot)
 
@@ -150,6 +158,7 @@ class Game:
         #if player hits item
         hits = pg.sprite.spritecollide(self.player, self.items, True, collide_hit_box)
         for hit in hits:
+            self.effects_sounds['pick_up'].play()
             if hit.type == 'antidote':
                 self.player.infected = False
                 self.player.infection_time = 0
@@ -226,10 +235,8 @@ class Game:
             print(self.levelHUDImage < (len(self.level_HUD_anim) - 1))
             print(self.level.numberOfLevels);
             if self.levelHUDImage < (len(self.level_HUD_anim) - 1):
-                print("well that worked");
                 if(self.counter % 20  == 0): #duration converted to seconds, will happen once a second
                     self.levelHUDImage = self.levelHUDImage + 1
-                    print("entered");
                     self.level_HUD = self.level_HUD_anim[self.levelHUDImage]
                 levelText = self.levelfont.render("{}".format(self.level.numberOfLevels), False, (0, 0, 0))
                 self.screen.blit(levelText, (WIDTH/2 + 20,HEIGHT/4))
