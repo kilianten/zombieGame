@@ -89,7 +89,11 @@ class Game:
             print(snd )
             self.weapon_sounds['gunshot'].append(pg.mixer.Sound(path.join(soundFolder, snd)))
         self.zombie_grunt_sounds = []
-        for snd in ZOMBIE
+        for snd in ZOMBIE_GRUNT_SOUNDS:
+            self.zombie_grunt_sounds.append(pg.mixer.Sound(path.join(soundFolder, snd)))
+        self.zombie_bite_sounds = []
+        for snd in ZOMBIE_BITE:
+            self.zombie_bite_sounds.append(pg.mixer.Sound(path.join(soundFolder, snd)))
 
     def new(self):
         # initialize all variables and do all the setup for a new game
@@ -134,6 +138,8 @@ class Game:
         #mobs hit  player collide
         hits = pg.sprite.spritecollide(self.player, self.mobs, False, collide_hit_box)
         for hit in hits:
+            if random() < 0.7:
+                choice(self.zombie_bite_sounds).play()
             self.player.health -= MOB_DAMAGE
             hit.vel = vec(0,0)
             if self.player.health <= 0:

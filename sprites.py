@@ -133,6 +133,8 @@ class Mob(pg.sprite.Sprite):
                 counter+= value
 
     def update(self):
+        if random() < 0.0004:
+            choice(self.game.zombie_grunt_sounds).play()
         #find the angle between player and x axis i.e where zombie needs to look
         self.rot = (self.game.player.pos - self.pos).angle_to(vec(1,0))
         self.image = pg.transform.rotate(self.game.mob_image, self.rot)
