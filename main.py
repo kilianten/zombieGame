@@ -242,13 +242,18 @@ class Game:
                     pg.draw.rect(self.screen, RED, self.camera.apply_rect(sprite.hit_box), 1)
                 elif isinstance(sprite, Bullet):
                     pg.draw.rect(self.screen, YELLOW, self.camera.apply_rect(sprite.hit_box), 1)
-        #devmode
+
+        #draw fog
+        self.render_fog()
+
+
+        #dev HUD
         if self.devMode:
-            positionText = self.myfont.render('X: ' + '{0:.2f}'.format(self.player.pos.x) + ("     ") + 'Y: ' + '{0:.2f}'.format(self.player.pos.y) , False, (0, 0, 0))
-            FPSText = self.myfont.render("{:.2f}".format(self.clock.get_fps()), False, (0, 0, 0))
-            playerHealthText = self.myfont.render("{:.2f}".format(self.player.health/PLAYER_HEALTH), False,       (0, 0, 0))
-            infectionText = self.myfont.render('Infection Level: ' + '{}'.format(self.player.infection_time) , False, (0, 0, 0))
-            mobText = self.myfont.render('ZOMBIES LEFT: ' + '{}, ZOMBIES IN LEVEL: {}, Level: {}'.format(self.level.zombiesPerLevel, len(self.mobs), self.level.numberOfLevels), False, (0, 0, 0))
+            positionText = self.myfont.render('X: ' + '{0:.2f}'.format(self.player.pos.x) + ("     ") + 'Y: ' + '{0:.2f}'.format(self.player.pos.y) , False, (255, 80, 80))
+            FPSText = self.myfont.render("{:.2f}".format(self.clock.get_fps()), False, (255, 80, 80))
+            playerHealthText = self.myfont.render("{:.2f}".format(self.player.health/PLAYER_HEALTH), False, (255, 80, 80))
+            infectionText = self.myfont.render('Infection Level: ' + '{}'.format(self.player.infection_time) , False, (255, 80, 80))
+            mobText = self.myfont.render('ZOMBIES LEFT: ' + '{}, ZOMBIES IN LEVEL: {}, Level: {}'.format(self.level.zombiesPerLevel, len(self.mobs), self.level.numberOfLevels), False, (255, 80, 80))
 
             for wall in self.walls:
                 pg.draw.rect(self.screen, WHITE, self.camera.apply_rect(wall.rect), 1)
@@ -258,9 +263,6 @@ class Game:
             self.screen.blit(playerHealthText, (0,40))
             self.screen.blit(infectionText, (0,60))
             self.screen.blit(mobText, (0,80))
-
-        #draw fog
-        self.render_fog()
 
         #HUD FUNCTIoNS
         #if player is infected, draw infected warning
@@ -279,7 +281,7 @@ class Game:
                 if(self.counter % 20  == 0): #duration converted to seconds, will happen once a second
                     self.levelHUDImage = self.levelHUDImage + 1
                     self.level_HUD = self.level_HUD_anim[self.levelHUDImage]
-                levelText = self.levelfont.render("{}".format(self.level.numberOfLevels), False, (0, 0, 0))
+                levelText = self.levelfont.render("{}".format(self.level.numberOfLevels), False, (255, 80, 80))
                 self.screen.blit(levelText, (WIDTH/2 + 20,HEIGHT/4))
                 self.screen.blit(self.level_HUD, (WIDTH/2 - 100,HEIGHT/4))
             else:
