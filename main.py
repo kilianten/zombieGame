@@ -7,6 +7,14 @@ from settings import *
 from sprites import *
 from map import *
 
+def resource_path(relative_path):
+    try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 #HUD display
 def draw_player_health(surf, x, y, pct):
@@ -28,7 +36,15 @@ def draw_player_health(surf, x, y, pct):
 class Game:
 
     def spawn_Mob(self):
-        Mob(self, self.map.width + randint(-100, 100), self.map.height + randint(-100, 100))
+        axisDecider = choice("x"+ "y")
+        if axisDecider == "x":
+           choices = [-10, (self.map.height + 10)]
+           yLength = choice(choices)
+           Mob(self, randint(0, self.map.width), yLength)
+        if axisDecider == "y":
+           choices = [-10, (self.map.width + 10)]
+           xLength = choice(choices)
+           Mob(self, xLength, randint(0, self.map.height))
 
     def load_Anim(self, imageFolder, images):
         animation = []

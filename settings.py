@@ -83,7 +83,6 @@ ITEM_DROP_CHANCES = {'antidote': 2, 'medkit': 4}
 
 #SOuNDS
 BG_MUSIC = 'atmosphere.wav'
-NEW_LEVEL = 'goodLuck.wav'
 EFFECTS_SOUNDS = {'level_start':'goodLuck.wav', 'pick_up':'pickup.wav', 'infected' : 'shock.wav'}
 WEAPONS_SOUNDS = {'gunshot.wav'}
 ZOMBIE_GRUNT_SOUNDS = {'zombie1.wav','zombie2.wav','zombie3.wav'}
