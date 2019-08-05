@@ -129,6 +129,7 @@ class Mob(pg.sprite.Sprite):
         self.rot = 0
         self.health = MOB_HEALTH + randint(-20,20)
         self.speed =  choice(MOB_SPEEDS)
+        self.isTrapped = False;
 
     def avoid_mobs(self):
         for mob in self.game.mobs:
@@ -141,36 +142,37 @@ class Mob(pg.sprite.Sprite):
         counter = 1
         rand = randint(1, TOTAL_CHANCE) #random number from 0 - total chance
         for key, value in ITEM_DROP_CHANCES.items():
-            print(key, value, rand)
             if value >= rand:
+                print(key)
+                print(rand)
                 Item(game, pos, key)
-                break
-            else:
-                counter+= value
+                return
 
     def update(self):
         if random() < 0.0004:
             choice(self.game.zombie_grunt_sounds).play()
-        #find the angle between player and x axis i.e where zombie needs to look
-        self.rot = (self.game.player.pos - self.pos).angle_to(vec(1,0))
-        self.image = pg.transform.rotate(self.game.mob_image, self.rot)
-        self.rect = self.image.get_rect()
-        self.rect.center = self.pos
-        self.acc = vec(1, 0).rotate(-self.rot)
-        #avoid fellow MOB_SPEED
-        self.avoid_mobs()
-        self.acc.scale_to_length(self.speed)
-        self.acc += self.vel *-1
-        self.vel += self.acc * self.game.dt
-        #equation of motion
-        self.pos += self.vel * self.game.dt + 0.5 * self.acc * self.game.dt**2
-        #mob collision
-        self.hit_box.centerx = self.pos.x
-        collide_with_walls(self, self.game.walls, 'x')
-        self.hit_box.centery = self.pos.y
-        collide_with_walls(self, self.game.walls, 'y')
-        #after collision regular rect set to where hitbox is after collision
-        self.rect.center = self.hit_box.center
+        if not self.isTrapped: #if not trapped move
+            #find the angle between player and x axis i.e where zombie needs to look
+            self.rot = (self.game.player.pos - self.pos).angle_to(vec(1,0))
+            self.image = pg.transform.rotate(self.game.mob_image, self.rot)
+            self.rect = self.image.get_rect()
+            self.rect.center = self.pos
+            self.acc = vec(1, 0).rotate(-self.rot)
+            #avoid fellow MOB_SPEED
+            self.avoid_mobs()
+            self.acc.scale_to_length(self.speed)
+            self.acc += self.vel *-1
+            self.vel += self.acc * self.game.dt
+            #equation of motion
+            self.pos += self.vel * self.game.dt + 0.5 * self.acc * self.game.dt**2
+            #mob collision
+            self.hit_box.centerx = self.pos.x
+            collide_with_walls(self, self.game.walls, 'x')
+            self.hit_box.centery = self.pos.y
+            collide_with_walls(self, self.game.walls, 'y')
+            #after collision regular rect set to where hitbox is after collision
+            self.rect.center = self.hit_box.center
+
         if self.health <= 0:
             self.kill()
             self.drop_items(self.game, self.pos)
@@ -235,6 +237,8 @@ class Item(pg.sprite.Sprite):
             self.image = game.antidote_image
         elif type == "medkit":
             self.image= game.medkit_image
+        elif type == "traps":
+            self.image= game.trap_icon_image
         self.type = type
         self.rect = self.image.get_rect()
         self.hit_box = self.rect
@@ -328,7 +332,7 @@ class BearTrap(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.transform.rotate(game.trap_image, rot)
-        self.rect = self.image.get_rect()
+        self.rect = pg.Rect(pos.x, pos.y, 2 , 2) #hitbox at center of trap
         self.hit_box = self.rect
         self.pos = vec(pos)
         self.rect.center = pos

@@ -115,7 +115,8 @@ class Game:
         self.light_rect = self.light_mask.get_rect()
         self.zombie_blood = pg.image.load(path.join(imageFolder, BLOOD_SPLAT)).convert_alpha()
         self.trap_image = pg.image.load(path.join(imageFolder, TRAP)).convert_alpha()
-
+        self.trapped_zombie_image = pg.image.load(path.join(imageFolder, TRAPPED_ZOMBIE_IMAGE)).convert_alpha()
+        self.trap_icon_image = pg.image.load(path.join(imageFolder, TRAP_ICON_IMAGE)).convert_alpha()
 
         #sound loading
         pg.mixer.music.load(path.join(soundFolder, BG_MUSIC))
@@ -219,10 +220,16 @@ class Game:
                     self.player.health = PLAYER_HEALTH
                 else:
                     self.player.health += MEDKIT_BOOST
+            if hit.type == 'traps':
+                self.player.inventory["trap"] = self.player.inventory['trap'] + randint(1,5)
+
         #mob hits bear trap
         hits = pg.sprite.groupcollide(self.mobs, self.traps, False, True)
         for hit in hits:
             self.beartrap_sound.play()
+            hit.isTrapped = True
+            hit.image = pg.transform.rotate(self.trapped_zombie_image, hit.rot)
+
 
         if self.player.infected == True:
             self.warningAnim.update()

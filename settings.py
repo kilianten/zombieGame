@@ -9,7 +9,7 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BROWN = (106,55,5)
-NIGHT_COLOUR = (15, 15, 15);
+NIGHT_COLOUR = (25, 25, 25);
 
 # game settings
 WIDTH = 1024   # 16 * 64 or 32 * 32 or 64 * 16
@@ -58,6 +58,7 @@ LEVEL_BANNER = ["HUD\\levelAnim\\LevelHUD01.png", "HUD\\levelAnim\\LevelHUD02.pn
 LEVEL_BANNER_DURATION = .01 #quarter a second
 PAUSED_TEXT = "HUD\\paused.png"
 TRAP = "items\\trap.png"
+TRAP_ICON_IMAGE = "items\\trapicon.png"
 
 #how far off bullet is from player
 BULLET_OFFSET = vec(30, 0)
@@ -65,6 +66,7 @@ ITEM_SPAWN_OFFSET = vec(40, 0)
 
 #mobs
 MOB_IMAGE = 'mobs\\zombie01_normal.png'
+TRAPPED_ZOMBIE_IMAGE = 'mobs\\zombie01_trapped.png'
 MOB_SPEEDS =  [250,290]#[190, 160, 95, 125, 130, 180, 150, 150, 150]
 MOB_HIT_BOX = pg.Rect(0,0,35,40)
 MOB_HEALTH = 100
@@ -83,7 +85,7 @@ BOB_SPEED = 0.4 #how fast item bobs up and down
 
 #DROPS
 TOTAL_CHANCE = 20 #total chance, chance of all items - total_chance = chance nothing drops. Must be greated than sum of all items chance
-ITEM_DROP_CHANCES = {'antidote': 2, 'medkit': 4}
+ITEM_DROP_CHANCES = {'antidote': 1, 'medkit': 3, 'traps': 5}
 
 #SOuNDS
 BG_MUSIC = 'atmosphere.wav'
