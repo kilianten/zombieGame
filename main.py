@@ -7,6 +7,8 @@ from settings import *
 from sprites import *
 from map import *
 
+
+
 def resource_path(relative_path):
     try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
@@ -33,7 +35,17 @@ def draw_player_health(surf, x, y, pct):
     pg.draw.rect(surf, col, fill_rect)
     pg.draw.rect(surf, WHITE, outline_rect, 2)
 
+
 class Game:
+
+    def canPlace(entity, self, surf, pos, dir, rot):
+        print("pressed")
+        if(self.player.inventory["trap"] > 0):
+            spacer = Spacer(self, pos, dir, rot)
+            hits = pg.sprite.spritecollide(spacer, self.notPlacable, False, False)
+            if len(hits) == 0: #if no collision, place
+                BearTrap(self, pos, dir, rot)
+                self.player.inventory["trap"] = self.player.inventory["trap"] - 1
 
     def spawn_Mob(self):
         axisDecider = choice("x"+ "y")
@@ -52,7 +64,7 @@ class Game:
         for frame in images:
             loadedImage = pg.image.load(path.join(imageFolder, frame))
             animation.append(loadedImage)
-        #imageFiles = glob.glob(path.join(imageFolder, image_path) + "*")
+        #imageFiles = glob. rglob(path.join(imageFolder, image_path) + "*")
         #for frame in imageFiles:
             #animation.append(pg.image.load(frame).convert_alpha())
         return animation
@@ -102,6 +114,7 @@ class Game:
         self.light_mask = pg.transform.scale(self.light_mask, LIGHT_RADIUS)
         self.light_rect = self.light_mask.get_rect()
         self.zombie_blood = pg.image.load(path.join(imageFolder, BLOOD_SPLAT)).convert_alpha()
+        self.trap_image = pg.image.load(path.join(imageFolder, TRAP)).convert_alpha()
 
 
         #sound loading
@@ -126,10 +139,12 @@ class Game:
     def new(self):
         # initialize all variables and do all the setup for a new game
         self.all_sprites = pg.sprite.Group()
+        self.notPlacable = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         self.items = pg.sprite.Group()
         self.bullets = pg.sprite.Group()
+        self.traps = pg.sprite.Group()
         self.warningAnim = Animation(self, WARNING_FRAMES, WARNING_DURATION)
         for tile_object in  self.map.tmxdata.objects:
             if tile_object.name == 'player':

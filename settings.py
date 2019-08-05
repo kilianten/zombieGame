@@ -57,10 +57,11 @@ INFECTED_BANNER = "hud\\infectedBanner.png"
 LEVEL_BANNER = ["HUD\\levelAnim\\LevelHUD01.png", "HUD\\levelAnim\\LevelHUD02.png", "HUD\\levelAnim\\LevelHUD03.png", "HUD\\levelAnim\\LevelHUD04.png", "HUD\\levelAnim\\LevelHUD05.png", "HUD\\levelAnim\\LevelHUD06.png", "HUD\\levelAnim\\LevelHUD07.png", "HUD\\levelAnim\\LevelHUD08.png", "HUD\\levelAnim\\LevelHUD09.png", "HUD\\levelAnim\\LevelHUD10.png", "HUD\\levelAnim\\LevelHUD11.png", "HUD\\levelAnim\\LevelHUD12.png"]
 LEVEL_BANNER_DURATION = .01 #quarter a second
 PAUSED_TEXT = "HUD\\paused.png"
-
+TRAP = "items\\trap.png"
 
 #how far off bullet is from player
 BULLET_OFFSET = vec(30, 0)
+ITEM_SPAWN_OFFSET = vec(40, 0)
 
 #mobs
 MOB_IMAGE = 'mobs\\zombie01_normal.png'

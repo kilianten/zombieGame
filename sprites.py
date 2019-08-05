@@ -46,6 +46,9 @@ class Player(pg.sprite.Sprite):
         self.health = PLAYER_HEALTH
         self.infected = False
         self.infection_time = 0
+        self.itemSelected = "trap"
+        self.inventory = {"trap": 2}
+        self.isPlacing = False #to check if player has released placing key
 
     def get_keys(self):
         self.rot_speed = 0
@@ -73,8 +76,21 @@ class Player(pg.sprite.Sprite):
                 self.vel = vec(-KICKBACK, 0).rotate(-self.rot)
         else:
             self.shooting = False;
+        if keys[pg.K_q]:
+            self.isPlacing = True #playing is trying to place
+        if keys[pg.K_q] == False and self.isPlacing == True:
+            dir = vec(1,0).rotate(-self.rot)
+            #so bullet spawns from gun not center of player
+            pos = self.pos + ITEM_SPAWN_OFFSET.rotate(-self.rot)
+            self.isPlacing = False
+            self.game.canPlace(self.game, self.game.trap_image, pos, dir, self.rot)
+
+
+
+
 
     def update(self):
+
         if self.shooting:
             curr_image = self.game.player_shooting
         else:
@@ -97,7 +113,7 @@ class Player(pg.sprite.Sprite):
 
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.mobs
+        self.groups = game.all_sprites, game.mobs, game.notPlacable
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = game.mob_image
@@ -189,7 +205,7 @@ class Bullet(pg.sprite.Sprite):
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.walls
+        self.groups = game.all_sprites, game.walls, game.notPlacable
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = game.wall_image
@@ -201,7 +217,7 @@ class Wall(pg.sprite.Sprite):
 
 class Obstacle(pg.sprite.Sprite):
     def __init__(self, game, x, y, w, h):
-        self.groups = game.walls
+        self.groups = game.walls, game.notPlacable
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.rect = pg.Rect(x, y, w, h)
@@ -212,7 +228,7 @@ class Obstacle(pg.sprite.Sprite):
 
 class Item(pg.sprite.Sprite):
     def __init__(self, game, pos, type):
-        self.groups = game.all_sprites, game.items
+        self.groups = game.all_sprites, game.items, game.notPlacable
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         if type == "antidote":
@@ -258,7 +274,7 @@ class Animation():
 
 class Vinyl(pg.sprite.Sprite):
     def __init__(self, game, pos, duration):
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.notPlacable
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = game.vinyl_anim[0]
         self.animation = game.vinyl_anim
@@ -296,3 +312,23 @@ class Vinyl(pg.sprite.Sprite):
                 self.counter = 0
                 if self.curr_image == len(self.animation) - 2:
                     self.isPlayingVinyl = False
+
+class Spacer(pg.sprite.Sprite):
+    def __init__(self, game, pos, dir, rot):
+        self.game = game
+        self.image = pg.transform.rotate(game.trap_image, rot)
+        self.rect = self.image.get_rect()
+        self.hit_box = self.rect
+        self.pos = vec(pos)
+        self.rect.center = pos
+
+class BearTrap(pg.sprite.Sprite):
+    def __init__(self, game, pos, dir, rot):
+        self.groups = game.all_sprites, game.traps, game.notPlacable
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.transform.rotate(game.trap_image, rot)
+        self.rect = self.image.get_rect()
+        self.hit_box = self.rect
+        self.pos = vec(pos)
+        self.rect.center = pos
