@@ -94,6 +94,7 @@ class Game:
         self.vinyl_disc_anim = self.load_Anim(imageFolder, VINYL_DISC_IMAGES)
         self.level_HUD_anim = self.load_Anim(imageFolder, LEVEL_BANNER)
         self.level_HUD = self.level_HUD_anim[0]
+        self.paused_text = pg.image.load(path.join(imageFolder, PAUSED_TEXT)).convert_alpha()
         #lighting effect
         self.fog = pg.Surface((WIDTH, HEIGHT))
         self.fog.fill(NIGHT_COLOUR)
@@ -141,6 +142,7 @@ class Game:
                 Obstacle(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
                 self.vinyl = Vinyl(self, (tile_object.x + tile_object.width/2, tile_object.y + tile_object.height/2), VINYL_DURATION * 10)
         self.camera = Camera(self.map.width, self.map.height)
+        self.paused = False
         self.level = Level(self, LEVEL_1_STAGES, LEVEL_1_ZOMBIESAMMOUNT)
 
     def run(self):
@@ -150,7 +152,8 @@ class Game:
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
-            self.update()
+            if not self.paused:
+                self.update()
             self.draw()
 
     def quit(self):
@@ -289,6 +292,8 @@ class Game:
                 self.screen.blit(self.level_HUD, (WIDTH/2 - 100,HEIGHT/4))
             else:
                 self.isNewLevel = False
+        if self.paused:
+            self.screen.blit(self.paused_text, (WIDTH/2 - 100,HEIGHT/4))
 
         pg.display.flip()
 
@@ -303,6 +308,8 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SLASH:
                     self.devMode = not self.devMode
+                if event.key == pg.K_p:
+                    self.paused = not self.paused
 
     def show_start_screen(self):
         pass
