@@ -100,6 +100,7 @@ class Game:
         self.light_mask = pg.image.load(path.join(imageFolder, LIGHT_MASK)).convert_alpha()
         self.light_mask = pg.transform.scale(self.light_mask, LIGHT_RADIUS)
         self.light_rect = self.light_mask.get_rect()
+        self.zombie_blood = pg.image.load(path.join(imageFolder, BLOOD_SPLAT)).convert_alpha()
 
 
         #sound loading
@@ -118,6 +119,8 @@ class Game:
         self.zombie_bite_sounds = []
         for snd in ZOMBIE_BITE:
             self.zombie_bite_sounds.append(pg.mixer.Sound(path.join(soundFolder, snd)))
+        self.zombieSplat = pg.mixer.Sound(path.join(soundFolder, ZOMBIE_SPLAT))
+
 
     def new(self):
         # initialize all variables and do all the setup for a new game

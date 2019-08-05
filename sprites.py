@@ -158,6 +158,8 @@ class Mob(pg.sprite.Sprite):
         if self.health <= 0:
             self.kill()
             self.drop_items(self.game, self.pos)
+            self.game.zombieSplat.play()
+            self.game.map_img.blit(self.game.zombie_blood, self.pos - vec(32,32))
             '''fromTotal = randint(0,SPAWN_CHANCE_TOTAL)
             if SPAWN_CHANCE_ANTIDOTE >= fromTotal:
                 Item(self.game, self.pos, 'antidote')'''

@@ -9,7 +9,7 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BROWN = (106,55,5)
-NIGHT_COLOUR = (10, 10, 10);
+NIGHT_COLOUR = (15, 15, 15);
 
 # game settings
 WIDTH = 1024   # 16 * 64 or 32 * 32 or 64 * 16
@@ -88,6 +88,7 @@ EFFECTS_SOUNDS = {'level_start':'goodLuck.wav', 'pick_up':'pickup.wav', 'infecte
 WEAPONS_SOUNDS = {'gunshot.wav'}
 ZOMBIE_GRUNT_SOUNDS = {'zombie1.wav','zombie2.wav','zombie3.wav'}
 ZOMBIE_BITE = {'bite.wav', 'bite2.wav'}
+ZOMBIE_SPLAT = 'splat.wav'
 
 #Vinyl
 VINYL_IMAGES = ["misc\\vinyl\\vinyl1.png", "misc\\vinyl\\vinyl2.png", "misc\\vinyl\\vinyl3.png", "misc\\vinyl\\vinyl4.png", "misc\\vinyl\\vinyl5.png"]
@@ -104,3 +105,4 @@ LEVEL_1_ZOMBIESAMMOUNT = 10
 #effects
 LIGHT_MASK = "misc\\light.png"
 LIGHT_RADIUS = (500,500)
+BLOOD_SPLAT = "misc\\bloodsplat.png"
