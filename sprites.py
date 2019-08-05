@@ -29,6 +29,7 @@ def collide_with_walls(sprite, group, dir):
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
+        self._layer = PLAYER_LAYER
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -113,6 +114,7 @@ class Player(pg.sprite.Sprite):
 
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
+        self._layer = MOB_LAYER
         self.groups = game.all_sprites, game.mobs, game.notPlacable
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -130,6 +132,7 @@ class Mob(pg.sprite.Sprite):
         self.health = MOB_HEALTH + randint(-20,20)
         self.speed =  choice(MOB_SPEEDS)
         self.isTrapped = False;
+
 
     def avoid_mobs(self):
         for mob in self.game.mobs:
@@ -184,6 +187,7 @@ class Mob(pg.sprite.Sprite):
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self, game, pos, dir, rot):
+        self._layer = PLAYER_LAYER
         self.groups = game.all_sprites, game.bullets
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -207,6 +211,7 @@ class Bullet(pg.sprite.Sprite):
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
+        self._layer = WALL_LAYER
         self.groups = game.all_sprites, game.walls, game.notPlacable
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -230,6 +235,7 @@ class Obstacle(pg.sprite.Sprite):
 
 class Item(pg.sprite.Sprite):
     def __init__(self, game, pos, type):
+        self._layer = ITEM_LAYER
         self.groups = game.all_sprites, game.items, game.notPlacable
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -328,6 +334,7 @@ class Spacer(pg.sprite.Sprite):
 
 class BearTrap(pg.sprite.Sprite):
     def __init__(self, game, pos, dir, rot):
+        self._layer = TRAP_LAYER
         self.groups = game.all_sprites, game.traps, game.notPlacable
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -339,6 +346,7 @@ class BearTrap(pg.sprite.Sprite):
 
 class BloodSplat(pg.sprite.Sprite):
     def __init__(self, game, pos):
+        self._layer = BLOOD_LAYER
         self.groups = game.all_sprites, game.blood
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
