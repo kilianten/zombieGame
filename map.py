@@ -82,3 +82,5 @@ class Level:
             self.game.isNewLevel = True
             self.game.effects_sounds['level_start'].play()
             self.game.levelHUDImage = 0
+            for blood in self.game.blood:
+                blood.kill()

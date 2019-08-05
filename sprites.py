@@ -177,7 +177,7 @@ class Mob(pg.sprite.Sprite):
             self.kill()
             self.drop_items(self.game, self.pos)
             self.game.zombieSplat.play()
-            self.game.map_img.blit(self.game.zombie_blood, self.pos - vec(32,32))
+            BloodSplat(self.game, self.pos)
             '''fromTotal = randint(0,SPAWN_CHANCE_TOTAL)
             if SPAWN_CHANCE_ANTIDOTE >= fromTotal:
                 Item(self.game, self.pos, 'antidote')'''
@@ -334,5 +334,15 @@ class BearTrap(pg.sprite.Sprite):
         self.image = pg.transform.rotate(game.trap_image, rot)
         self.rect = pg.Rect(pos.x, pos.y, 2 , 2) #hitbox at center of trap
         self.hit_box = self.rect
+        self.pos = vec(pos)
+        self.rect.center = pos
+
+class BloodSplat(pg.sprite.Sprite):
+    def __init__(self, game, pos):
+        self.groups = game.all_sprites, game.blood
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = game.zombie_blood
+        self.rect = self.image.get_rect()
         self.pos = vec(pos)
         self.rect.center = pos

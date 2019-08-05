@@ -147,6 +147,7 @@ class Game:
         self.items = pg.sprite.Group()
         self.bullets = pg.sprite.Group()
         self.traps = pg.sprite.Group()
+        self.blood = pg.sprite.Group()
         self.warningAnim = Animation(self, WARNING_FRAMES, WARNING_DURATION)
         for tile_object in  self.map.tmxdata.objects:
             if tile_object.name == 'player':
