@@ -70,6 +70,7 @@ class Game:
         return animation
 
     def __init__(self):
+        pg.mixer.pre_init(44100, -16, 1, 2048)
         pg.init()
         pg.font.init()
         self.myfont = pg.font.SysFont('Arial Header', 25)
@@ -88,12 +89,14 @@ class Game:
         game_folder = path.dirname(__file__)
         imageFolder = path.join(game_folder, 'images')
         mapFolder = path.join(game_folder, 'maps')
-        soundFolder = path.join(game_folder, 'sounds')
+        soundFolder = path.join(game_folder, 'sounds') 
         self.map = TiledMap (path.join(mapFolder, 'basicLevel.tmx'))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.playerImage = pg.image.load(path.join(imageFolder, playerImage)).convert_alpha()
-        self.bullet_image = pg.image.load(path.join(imageFolder, BULLET_IMAGE)).convert_alpha()
+        self.bullet_images = {}
+        self.bullet_images['lg'] = pg.image.load(path.join(imageFolder, BULLET_IMAGE)).convert_alpha()
+        self.bullet_images['sm'] = pg.image.load(path.join(imageFolder, SHOTGUN_BULLET_IMAGE)).convert_alpha()
         self.mob_image = pg.image.load(path.join(imageFolder, MOB_IMAGE)).convert_alpha()
         self.wall_image = pg.image.load(path.join(imageFolder, WALL_IMAGE)).convert_alpha()
         self.player_shooting = pg.image.load(path.join(imageFolder, PLAYER_SHOOTING)).convert_alpha()
@@ -124,10 +127,11 @@ class Game:
         for type in EFFECTS_SOUNDS:
             self.effects_sounds[type] = pg.mixer.Sound(path.join(soundFolder, EFFECTS_SOUNDS[type]))
         self.weapon_sounds = {}
-        self.weapon_sounds['gunshot'] = []
-        for snd in WEAPONS_SOUNDS:
-            print(snd )
-            self.weapon_sounds['gunshot'].append(pg.mixer.Sound(path.join(soundFolder, snd)))
+        for weapon in WEAPONS_SOUNDS:
+            self.weapon_sounds[weapon] = []
+            for snd in WEAPONS_SOUNDS[weapon]:
+                s = pg.mixer.Sound(path.join(soundFolder, snd))
+                self.weapon_sounds[weapon].append(s)
         self.zombie_grunt_sounds = []
         for snd in ZOMBIE_GRUNT_SOUNDS:
             self.zombie_grunt_sounds.append(pg.mixer.Sound(path.join(soundFolder, snd)))
@@ -202,7 +206,7 @@ class Game:
         #bullet hits mobs
         hits = pg.sprite.groupcollide(self.mobs, self.bullets, False, True)
         for hit in hits:
-            hit.health -= PISTOL_DAMAGE
+            hit.health -= WEAPONS[self.player.weapon]['bullet_damage'] * len(hits[hit])#multiply because map hit more than once how many times hit
             hit.vel = vec(0,0)
 
         #PlayVINYL

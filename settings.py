@@ -37,6 +37,10 @@ PLAYER_SHOOTING = "player\\richShooting.png"
 
 #gun settings
 BULLET_IMAGE = "weapons\\bullet.png"
+SHOTGUN_BULLET_IMAGE = "weapons\\shotgunShell.png"
+WEAPONS = {}
+WEAPONS['pistol'] = {'bullet_speed': 500, 'bullet_lifetime': 1000, 'rate': 250, 'kickback': 200, 'spread': 5, 'bullet_damage':10, 'bullet_size':'lg', 'bullet_count': 1}
+WEAPONS['shotgun'] = {'bullet_speed': 400, 'bullet_lifetime': 500, 'rate': 700, 'kickback': 300, 'spread': 20, 'bullet_damage':7, 'bullet_size':'sm', 'bullet_count': 12}
 BULLET_SPEED = 500
 BULLET_LIFETIME = 1000
 BULLET_RATE = 150
@@ -90,7 +94,7 @@ ITEM_DROP_CHANCES = {'antidote': 1, 'medkit': 3, 'traps': 5}
 #SOuNDS
 BG_MUSIC = 'atmosphere.wav'
 EFFECTS_SOUNDS = {'level_start':'goodLuck.wav', 'pick_up':'pickup.wav', 'infected' : 'shock.wav'}
-WEAPONS_SOUNDS = {'gunshot.wav'}
+WEAPONS_SOUNDS = {'pistol' : ['gunshot.wav'], 'shotgun': ['shotgun.wav']}
 ZOMBIE_GRUNT_SOUNDS = {'zombie1.wav','zombie2.wav','zombie3.wav'}
 ZOMBIE_BITE = {'bite.wav', 'bite2.wav'}
 ZOMBIE_SPLAT = 'splat.wav'

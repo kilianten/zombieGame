@@ -50,6 +50,7 @@ class Player(pg.sprite.Sprite):
         self.itemSelected = "trap"
         self.inventory = {"trap": 2}
         self.isPlacing = False #to check if player has released placing key
+        self.weapon = 'shotgun'
 
     def get_keys(self):
         self.rot_speed = 0
@@ -64,17 +65,7 @@ class Player(pg.sprite.Sprite):
         if keys[pg.K_UP]:
             self.vel = vec(playerSpeed, 0).rotate(-self.rot)
         if keys[pg.K_SPACE]:
-            now = pg.time.get_ticks()
-            if now - self.last_shot > BULLET_RATE:
-                self.last_shot = now
-                dir = vec(1,0).rotate(-self.rot)
-                #so bullet spawns from gun not center of player
-                pos = self.pos + BULLET_OFFSET.rotate(-self.rot)
-                Bullet(self.game, pos, dir, self.rot)
-                choice(self.game.weapon_sounds['gunshot']).play()
-                self.shooting = True
-                #kickback
-                self.vel = vec(-KICKBACK, 0).rotate(-self.rot)
+            self.shoot()
         else:
             self.shooting = False;
         if keys[pg.K_q]:
@@ -86,8 +77,20 @@ class Player(pg.sprite.Sprite):
             self.isPlacing = False
             self.game.canPlace(self.game, self.game.trap_image, pos, dir, self.rot)
 
-
-
+    def shoot(self):
+        now = pg.time.get_ticks()
+        if now - self.last_shot > WEAPONS[self.weapon]['rate']:
+            self.last_shot = now
+            dir = vec(1,0).rotate(-self.rot)
+            #so bullet spawns from gun not center of player
+            pos = self.pos + BULLET_OFFSET.rotate(-self.rot)
+            #kickback
+            self.vel = vec(-WEAPONS[self.weapon]['kickback'], 0).rotate(-self.rot)
+            for i in range(WEAPONS[self.weapon]['bullet_count']):
+                spread = uniform(-WEAPONS[self.weapon]['spread'], WEAPONS[self.weapon]['spread'])
+                Bullet(self.game, pos, dir.rotate(spread), self.rot)
+                choice(self.game.weapon_sounds[self.weapon]).play()
+            self.shooting = True
 
 
     def update(self):
@@ -191,14 +194,13 @@ class Bullet(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.bullets
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.transform.rotate(game.bullet_image, rot)
+        self.image = pg.transform.rotate(game.bullet_images[WEAPONS[game.player.weapon]['bullet_size']],rot)
         self.rect = self.image.get_rect()
         self.hit_box = self.rect
         self.pos = vec(pos)
         self.rect.center = pos
         #innaccuracy
-        spread = uniform (-GUN_SPREAD, GUN_SPREAD)
-        self.vel = dir.rotate(spread) * BULLET_SPEED
+        self.vel = dir * WEAPONS[game.player.weapon]['bullet_speed']
         self.spawn_time = pg.time.get_ticks()
 
     def update(self):
@@ -206,7 +208,7 @@ class Bullet(pg.sprite.Sprite):
         self.rect.center = self.pos
         if pg.sprite.spritecollideany(self, self.game.walls):
             self.kill()
-        if pg.time.get_ticks() - self.spawn_time > BULLET_LIFETIME:
+        if pg.time.get_ticks() - self.spawn_time > WEAPONS[self.game.player.weapon]['bullet_lifetime']:
             self.kill()
 
 class Wall(pg.sprite.Sprite):
