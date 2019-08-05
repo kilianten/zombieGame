@@ -92,6 +92,7 @@ WEAPONS_SOUNDS = {'gunshot.wav'}
 ZOMBIE_GRUNT_SOUNDS = {'zombie1.wav','zombie2.wav','zombie3.wav'}
 ZOMBIE_BITE = {'bite.wav', 'bite2.wav'}
 ZOMBIE_SPLAT = 'splat.wav'
+BEAR_TRAP_SOUND = 'bearTrap.wav'
 
 #Vinyl
 VINYL_IMAGES = ["misc\\vinyl\\vinyl1.png", "misc\\vinyl\\vinyl2.png", "misc\\vinyl\\vinyl3.png", "misc\\vinyl\\vinyl4.png", "misc\\vinyl\\vinyl5.png"]
@@ -107,5 +108,5 @@ LEVEL_1_ZOMBIESAMMOUNT = 10
 
 #effects
 LIGHT_MASK = "misc\\light.png"
-LIGHT_RADIUS = (500,500)
+LIGHT_RADIUS = (700,700)
 BLOOD_SPLAT = "misc\\bloodsplat.png"

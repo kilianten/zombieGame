@@ -134,6 +134,7 @@ class Game:
         for snd in ZOMBIE_BITE:
             self.zombie_bite_sounds.append(pg.mixer.Sound(path.join(soundFolder, snd)))
         self.zombieSplat = pg.mixer.Sound(path.join(soundFolder, ZOMBIE_SPLAT))
+        self.beartrap_sound = pg.mixer.Sound(path.join(soundFolder, BEAR_TRAP_SOUND))
 
 
     def new(self):
@@ -218,6 +219,10 @@ class Game:
                     self.player.health = PLAYER_HEALTH
                 else:
                     self.player.health += MEDKIT_BOOST
+        #mob hits bear trap
+        hits = pg.sprite.groupcollide(self.mobs, self.traps, False, True)
+        for hit in hits:
+            self.beartrap_sound.play()
 
         if self.player.infected == True:
             self.warningAnim.update()
