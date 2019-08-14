@@ -48,9 +48,9 @@ class Player(pg.sprite.Sprite):
         self.infected = False
         self.infection_time = 0
         self.itemSelected = "trap"
-        self.inventory = {"trap": 2}
+        self.inventory = {"trap": 2, "shotgun":0}
         self.isPlacing = False #to check if player has released placing key
-        self.weapon = 'shotgun'
+        self.weapon = 'pistol'
 
     def get_keys(self):
         self.rot_speed = 0
@@ -90,6 +90,10 @@ class Player(pg.sprite.Sprite):
                 spread = uniform(-WEAPONS[self.weapon]['spread'], WEAPONS[self.weapon]['spread'])
                 Bullet(self.game, pos, dir.rotate(spread), self.rot)
                 choice(self.game.weapon_sounds[self.weapon]).play()
+                if self.weapon == "shotgun":
+                    self.inventory["shotgun"] -= 1
+                    if self.inventory["shotgun"] <= 0:
+                        self.weapon = 'pistol'
             self.shooting = True
 
 
@@ -149,8 +153,6 @@ class Mob(pg.sprite.Sprite):
         rand = randint(1, TOTAL_CHANCE) #random number from 0 - total chance
         for key, value in ITEM_DROP_CHANCES.items():
             if value >= rand:
-                print(key)
-                print(rand)
                 Item(game, pos, key)
                 return
 
@@ -247,6 +249,8 @@ class Item(pg.sprite.Sprite):
             self.image= game.medkit_image
         elif type == "traps":
             self.image= game.trap_icon_image
+        elif type == "shotgun":
+            self.image= game.shotgun_image
         self.type = type
         self.rect = self.image.get_rect()
         self.hit_box = self.rect

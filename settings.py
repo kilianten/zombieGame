@@ -63,6 +63,8 @@ LEVEL_BANNER_DURATION = .01 #quarter a second
 PAUSED_TEXT = "HUD\\paused.png"
 TRAP = "items\\trap.png"
 TRAP_ICON_IMAGE = "items\\trapicon.png"
+SHOTGUN_IMAGE = "items\\shotgun.png"
+ARROW_IMAGE = "HUD\\arrow.png"
 
 #how far off bullet is from player
 BULLET_OFFSET = vec(30, 0)
@@ -89,7 +91,7 @@ BOB_SPEED = 0.4 #how fast item bobs up and down
 
 #DROPS
 TOTAL_CHANCE = 20 #total chance, chance of all items - total_chance = chance nothing drops. Must be greated than sum of all items chance
-ITEM_DROP_CHANCES = {'antidote': 1, 'medkit': 3, 'traps': 5}
+ITEM_DROP_CHANCES = {'antidote': 1, 'medkit': 3, 'traps': 5, 'shotgun': 7}
 
 #SOuNDS
 BG_MUSIC = 'atmosphere.wav'
@@ -114,7 +116,7 @@ LEVEL_1_ZOMBIESAMMOUNT = 10
 
 #effects
 LIGHT_MASK = "misc\\light.png"
-LIGHT_RADIUS = (700,700)
+LIGHT_RADIUS = (900,900)
 BLOOD_SPLAT = "misc\\bloodsplat.png"
 
 #Layers

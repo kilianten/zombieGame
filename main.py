@@ -8,7 +8,6 @@ from sprites import *
 from map import *
 
 
-
 def resource_path(relative_path):
     try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
@@ -39,7 +38,6 @@ def draw_player_health(surf, x, y, pct):
 class Game:
 
     def canPlace(entity, self, surf, pos, dir, rot):
-        print("pressed")
         if(self.player.inventory["trap"] > 0):
             spacer = Spacer(self, pos, dir, rot)
             hits = pg.sprite.spritecollide(spacer, self.notPlacable, False, False)
@@ -73,23 +71,39 @@ class Game:
         pg.mixer.pre_init(44100, -16, 1, 2048)
         pg.init()
         pg.font.init()
-        self.myfont = pg.font.SysFont('Arial Header', 25)
-        self.levelfont = pg.font.Font(None, 60)
+        print("setTitle")
+        pg.display.set_caption("INSATIABLE ZOMBIES")
+        self.isNewLevel = False
+        print("screensize")
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
-        pg.display.set_caption(TITLE)
+
+
+
+        print("clockset")
         self.clock = pg.time.Clock()
+        print("init middle")
+
         pg.key.set_repeat(500, 100)
         self.load_data()
         self.devMode = False
-        self.isNewLevel = False
+        self.myfont = pg.font.SysFont("sans", 25)
+        print("init")
+
         self.counter = 0
         self.levelHUDImage = 0
+        self.levelfont = pg.font.SysFont("sans", 60)
+        self.diedFromInfection = False
+
+        print("levelFont")
+
+        print("end init")
+
 
     def load_data(self):
         game_folder = path.dirname(__file__)
         imageFolder = path.join(game_folder, 'images')
         mapFolder = path.join(game_folder, 'maps')
-        soundFolder = path.join(game_folder, 'sounds') 
+        soundFolder = path.join(game_folder, 'sounds')
         self.map = TiledMap (path.join(mapFolder, 'basicLevel.tmx'))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
@@ -120,6 +134,8 @@ class Game:
         self.trap_image = pg.image.load(path.join(imageFolder, TRAP)).convert_alpha()
         self.trapped_zombie_image = pg.image.load(path.join(imageFolder, TRAPPED_ZOMBIE_IMAGE)).convert_alpha()
         self.trap_icon_image = pg.image.load(path.join(imageFolder, TRAP_ICON_IMAGE)).convert_alpha()
+        self.shotgun_image = pg.image.load(path.join(imageFolder, SHOTGUN_IMAGE)).convert_alpha()
+        self.arrow_image = pg.image.load(path.join(imageFolder, ARROW_IMAGE)).convert_alpha()
 
         #sound loading
         pg.mixer.music.load(path.join(soundFolder, BG_MUSIC))
@@ -170,6 +186,7 @@ class Game:
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
+        print("running")
         pg.mixer.music.play(loops=-1)
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
@@ -187,6 +204,7 @@ class Game:
         # update portion of the game loop
         self.all_sprites.update()
         self.camera.update(self.player)
+
         #mobs hit  player collide
         hits = pg.sprite.spritecollide(self.player, self.mobs, False, collide_hit_box)
         for hit in hits:
@@ -227,6 +245,9 @@ class Game:
                     self.player.health += MEDKIT_BOOST
             if hit.type == 'traps':
                 self.player.inventory["trap"] = self.player.inventory['trap'] + randint(1,5)
+            if hit.type == 'shotgun':
+                self.player.inventory["shotgun"] = self.player.inventory['shotgun'] + 100
+                self.player.weapon = "shotgun"
 
         #mob hits bear trap
         hits = pg.sprite.groupcollide(self.mobs, self.traps, False, True)
@@ -241,7 +262,7 @@ class Game:
             if self.player.infection_time == INFECTION_TIME:
                 print("infected: game over")
                 self.playing = False
-
+                self.diedFromInfection = True
         self.level.update()
 
         #spawnZombies
@@ -292,6 +313,7 @@ class Game:
             playerHealthText = self.myfont.render("{:.2f}".format(self.player.health/PLAYER_HEALTH), False, (255, 80, 80))
             infectionText = self.myfont.render('Infection Level: ' + '{}'.format(self.player.infection_time) , False, (255, 80, 80))
             mobText = self.myfont.render('ZOMBIES LEFT: ' + '{}, ZOMBIES IN LEVEL: {}, Level: {}'.format(self.level.zombiesPerLevel, len(self.mobs), self.level.numberOfLevels), False, (255, 80, 80))
+            shotgun_text = self.myfont.render('Weapon: {}, Bullets: {}'.format(self.player.weapon, self.player.inventory['shotgun']) , False, (255, 80, 80))
 
             for wall in self.walls:
                 pg.draw.rect(self.screen, WHITE, self.camera.apply_rect(wall.rect), 1)
@@ -301,6 +323,7 @@ class Game:
             self.screen.blit(playerHealthText, (0,40))
             self.screen.blit(infectionText, (0,60))
             self.screen.blit(mobText, (0,80))
+            self.screen.blit(shotgun_text, (0,100))
 
         #HUD FUNCTIoNS
         #if player is infected, draw infected warning
@@ -312,9 +335,6 @@ class Game:
 
         #draw levelHUD if new level
         if(self.isNewLevel):
-            print(self.levelHUDImage);
-            print(self.levelHUDImage < (len(self.level_HUD_anim) - 1))
-            print(self.level.numberOfLevels);
             if self.levelHUDImage < (len(self.level_HUD_anim) - 1):
                 if(self.counter % 20  == 0): #duration converted to seconds, will happen once a second
                     self.levelHUDImage = self.levelHUDImage + 1
@@ -347,10 +367,32 @@ class Game:
         pass
 
     def show_go_screen(self):
-        pass
+        self.screen.fill(BLACK)
+        go_font = self.levelfont.render("GAME OVER", False, (208, 0, 0))
+        self.screen.blit(go_font, (WIDTH/2 - 100,HEIGHT/2))
+        if self.diedFromInfection:
+            go_font = self.levelfont.render("DIED FROM INFECTION!", False, (255, 255, 255))
+            self.screen.blit(go_font, (100,HEIGHT * 3/4))
+        go_font = self.myfont.render("Press any key to continue", False, (255, 255, 255))
+        self.screen.blit(go_font, (WIDTH/2 - 100,HEIGHT * 1/4))
+        pg.display.flip()
+        self.wait_for_key()
+
+    def wait_for_key(self):
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.quit()
+                if event.type == pg.KEYUP:
+                    waiting = False
 
 # create the game object
+print("game creating")
 g = Game()
+print("game created")
 g.show_start_screen()
 while True:
     g.new()

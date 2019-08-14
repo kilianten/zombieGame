@@ -2,9 +2,6 @@ import pygame as pg
 import pytmx
 from settings import *
 
-print(pytmx.__version__)
-
-
 def collide_hit_box(one, two):
 
     return one.hit_box.colliderect(two.rect)
